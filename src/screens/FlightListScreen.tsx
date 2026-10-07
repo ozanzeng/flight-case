@@ -9,7 +9,7 @@ import { useFlightList } from '../features/flights/useFlightList';
 import type { RootStackScreenProps } from '../navigation/types';
 
 export function FlightListScreen({ navigation }: RootStackScreenProps<'FlightList'>) {
-  const { status, items, total, error } = useFlightList();
+  const { status, items, total, error, loadNextPage } = useFlightList();
   const insets = useSafeAreaInsets();
 
   const openDetail = useCallback(
@@ -46,6 +46,14 @@ export function FlightListScreen({ navigation }: RootStackScreenProps<'FlightLis
         ) : null
       }
       ItemSeparatorComponent={Separator}
+      onEndReached={loadNextPage}
+      onEndReachedThreshold={0.5}
+      // Sonraki sayfa yüklenirken belirteç listenin altında; mevcut kartlar görünür kalır.
+      ListFooterComponent={
+        status === 'loadingMore' ? (
+          <ActivityIndicator style={styles.footer} accessibilityLabel="Daha fazla uçuş yükleniyor" />
+        ) : null
+      }
       style={styles.list}
       contentContainerStyle={[styles.content, { paddingBottom: 16 + insets.bottom }]}
     />
@@ -69,6 +77,9 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: 12,
+  },
+  footer: {
+    paddingVertical: 16,
   },
   center: {
     flex: 1,
