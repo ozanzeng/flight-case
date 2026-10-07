@@ -24,7 +24,7 @@ export function FlightFilters({ sort, onlyDirect, onSortChange, onOnlyDirectChan
         <Switch value={onlyDirect} onValueChange={onOnlyDirectChange} accessibilityLabel="Yalnızca direkt uçuşlar" />
       </View>
 
-      <View style={styles.segment} accessibilityLabel="Sıralama">
+      <View style={styles.segment}>
         {SORT_OPTIONS.map(option => {
           const selected = option.value === sort;
           return (

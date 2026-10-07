@@ -7,9 +7,9 @@ export type FlightQuery = {
 };
 
 /** loading: ilk sayfa yükleniyor, loadingMore: sonraki sayfa yükleniyor (liste görünür kalır). */
-export type FlightListStatus = 'idle' | 'loading' | 'loadingMore' | 'success' | 'error';
+type FlightListStatus = 'loading' | 'loadingMore' | 'success' | 'error';
 
-export type FlightListState = {
+type FlightListState = {
   query: FlightQuery;
   status: FlightListStatus;
   items: FlightDto[];
@@ -21,17 +21,18 @@ export type FlightListState = {
   error: string | null;
 };
 
-export type FlightListAction =
+type FlightListAction =
   | { type: 'queryChanged'; query: Partial<FlightQuery> }
   | { type: 'loadStarted'; page: number }
   | { type: 'loadSucceeded'; response: FlightListResponse }
   | { type: 'loadFailed'; message: string };
 
-export const DEFAULT_QUERY: FlightQuery = { sort: 'price', onlyDirect: false };
+const DEFAULT_QUERY: FlightQuery = { sort: 'price', onlyDirect: false };
 
 export const initialFlightListState: FlightListState = {
   query: DEFAULT_QUERY,
-  status: 'idle',
+  // Açılışta ilk sayfa hemen istenir; boş bir ara durum yok.
+  status: 'loading',
   items: [],
   total: null,
   page: 0,
@@ -45,7 +46,7 @@ export function flightListReducer(state: FlightListState, action: FlightListActi
       const query = { ...state.query, ...action.query };
       if (query.sort === state.query.sort && query.onlyDirect === state.query.onlyDirect) return state;
       // Yeni sorgu: sayfalama başa döner, önceki sonucun hiçbir sayfası taşınmaz.
-      return { ...initialFlightListState, query, status: 'loading' };
+      return { ...initialFlightListState, query };
     }
     case 'loadStarted':
       return { ...state, status: action.page === 1 ? 'loading' : 'loadingMore', error: null };
