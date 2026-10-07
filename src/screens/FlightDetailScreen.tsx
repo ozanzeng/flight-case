@@ -2,8 +2,9 @@ import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-nat
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { FlightDto } from '../api/types';
+import { FavoriteButton } from '../components/FavoriteButton';
 import { colors } from '../components/theme';
-import { formatDuration, formatPrice, formatStops, formatTime } from '../domain/format';
+import { formatBaggage, formatDate, formatDuration, formatPrice, formatStops, formatTime } from '../domain/format';
 import { useFlightDetail } from '../features/flights/useFlightDetail';
 import type { RootStackScreenProps } from '../navigation/types';
 
@@ -33,27 +34,43 @@ function FlightDetail({ flight }: { flight: FlightDto }) {
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={[styles.content, { paddingBottom: 24 + insets.bottom }]}>
-      <View>
-        <Text style={styles.airline}>{flight.airline}</Text>
-        <Text style={styles.muted}>{flight.flightNumber}</Text>
+      <View style={styles.header}>
+        <View style={styles.headerText}>
+          <Text style={styles.airline}>{flight.airline}</Text>
+          <Text style={styles.muted}>{flight.flightNumber}</Text>
+        </View>
+        {/* Listedeki kartla aynı store'u okur; işaret iki ekranda anında tutarlı. */}
+        <FavoriteButton flight={flight} />
       </View>
 
       <View style={styles.section}>
-        <Row label="Kalkış" value={`${formatTime(flight.departureAt)} · ${flight.origin.code}`} />
-        <Row label="Varış" value={`${formatTime(flight.arrivalAt)} · ${flight.destination.code}`} />
+        <Row
+          label="Kalkış"
+          value={`${formatTime(flight.departureAt)} · ${flight.origin.code}`}
+          detail={formatDate(flight.departureAt)}
+        />
+        <Row
+          label="Varış"
+          value={`${formatTime(flight.arrivalAt)} · ${flight.destination.code}`}
+          detail={formatDate(flight.arrivalAt)}
+        />
         <Row label="Süre" value={formatDuration(flight.durationMinutes)} />
         <Row label="Aktarma" value={formatStops(flight.stops)} />
+        <Row label="Bagaj" value={formatBaggage(flight.baggageKg)} />
         <Row label="Fiyat" value={formatPrice(flight.priceMinor)} />
       </View>
     </ScrollView>
   );
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+function Row({ label, value, detail }: { label: string; value: string; detail?: string }) {
   return (
-    <View style={styles.row} accessible accessibilityLabel={`${label}: ${value}`}>
+    <View style={styles.row} accessible accessibilityLabel={`${label}: ${detail ? `${detail}, ` : ''}${value}`}>
       <Text style={styles.label}>{label}</Text>
-      <Text style={styles.value}>{value}</Text>
+      <View style={styles.valueBox}>
+        <Text style={styles.value}>{value}</Text>
+        {detail ? <Text style={styles.muted}>{detail}</Text> : null}
+      </View>
     </View>
   );
 }
@@ -65,6 +82,13 @@ const styles = StyleSheet.create({
   content: {
     padding: 16,
     gap: 16,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerText: {
+    flex: 1,
   },
   airline: {
     fontSize: 22,
@@ -94,8 +118,11 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: colors.textMuted,
   },
-  value: {
+  valueBox: {
     flexShrink: 1,
+    alignItems: 'flex-end',
+  },
+  value: {
     fontSize: 15,
     fontWeight: '600',
     color: colors.text,

@@ -28,6 +28,21 @@ export function formatTime(iso: string): string {
   return `${pad2(date.getUTCHours())}:${pad2(date.getUTCMinutes())}`;
 }
 
+const MONTHS = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+
+/** "2026-10-16T00:45:00+03:00" → "16 Ekim 2026" (Europe/Istanbul takvim günü) */
+export function formatDate(iso: string): string {
+  const date = toIstanbul(iso);
+  return `${date.getUTCDate()} ${MONTHS[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
+}
+
+/** 0 ve null farklı anlam taşır: 0 = bagaj dahil değil, null = bilgi yok. */
+export function formatBaggage(baggageKg: number | null): string {
+  if (baggageKg === null) return 'Bagaj bilgisi yok';
+  if (baggageKg === 0) return 'Bagaj dahil değil';
+  return `${baggageKg} kg`;
+}
+
 /** 70 → "1 sa 10 dk", 60 → "1 sa", 45 → "45 dk" */
 export function formatDuration(totalMinutes: number): string {
   const hours = Math.floor(totalMinutes / 60);
