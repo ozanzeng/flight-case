@@ -2,7 +2,8 @@ import { useCallback, useEffect, useReducer, useRef } from 'react';
 
 import { PAGE_SIZE } from '../../api/config';
 import { ApiError, fetchFlights } from '../../api/flightsApi';
-import { flightListReducer, initialFlightListState } from './flightListReducer';
+import type { FlightSort } from '../../api/types';
+import { flightListReducer, initialFlightListState, type FlightQuery } from './flightListReducer';
 
 export function useFlightList() {
   const [state, dispatch] = useReducer(flightListReducer, initialFlightListState);
@@ -10,15 +11,19 @@ export function useFlightList() {
   const inFlightRef = useRef(false);
   const controllerRef = useRef<AbortController | null>(null);
 
-  const loadPage = useCallback((page: number) => {
+  const loadPage = useCallback((query: FlightQuery, page: number) => {
     if (inFlightRef.current) return;
     inFlightRef.current = true;
     const controller = new AbortController();
     controllerRef.current = controller;
 
     dispatch({ type: 'loadStarted', page });
-    fetchFlights({ page, limit: PAGE_SIZE, sort: 'price', onlyDirect: false }, controller.signal)
-      .then(response => dispatch({ type: 'loadSucceeded', response }))
+    fetchFlights({ page, limit: PAGE_SIZE, sort: query.sort, onlyDirect: query.onlyDirect }, controller.signal)
+      .then(response => {
+        // Sorgu değiştiyse istek iptal edilmiştir; geç gelen yanıt yeni sonuca karışmaz.
+        if (controller.signal.aborted) return;
+        dispatch({ type: 'loadSucceeded', response });
+      })
       .catch((error: unknown) => {
         if (controller.signal.aborted) return;
         dispatch({ type: 'loadFailed', message: toMessage(error) });
@@ -28,23 +33,31 @@ export function useFlightList() {
       });
   }, []);
 
+  const { query } = state;
   useEffect(() => {
-    loadPage(1);
+    // Açılışta ve her sorgu değişiminde ilk sayfadan başlanır; önceki istek iptal edilir.
+    loadPage(query, 1);
     return () => {
       controllerRef.current?.abort();
       controllerRef.current = null;
       inFlightRef.current = false;
     };
-  }, [loadPage]);
+  }, [loadPage, query]);
 
   const { status, hasMore, page } = state;
   const loadNextPage = useCallback(() => {
     // Yalnızca son yükleme başarılıysa ve servis devamı olduğunu söylüyorsa.
     if (status !== 'success' || !hasMore) return;
-    loadPage(page + 1);
-  }, [loadPage, status, hasMore, page]);
+    loadPage(query, page + 1);
+  }, [loadPage, query, status, hasMore, page]);
 
-  return { ...state, loadNextPage };
+  const setSort = useCallback((sort: FlightSort) => dispatch({ type: 'queryChanged', query: { sort } }), []);
+  const setOnlyDirect = useCallback(
+    (onlyDirect: boolean) => dispatch({ type: 'queryChanged', query: { onlyDirect } }),
+    [],
+  );
+
+  return { ...state, loadNextPage, setSort, setOnlyDirect };
 }
 
 export function toMessage(error: unknown): string {
