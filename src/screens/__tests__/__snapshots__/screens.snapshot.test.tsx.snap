@@ -542,6 +542,7 @@ exports[`2.5: favoriler ekranı — kalkış saatine göre sıralı liste 1`] = 
   removeClippedSubviews={false}
   renderItem={[Function]}
   scrollEventThrottle={0.0001}
+  scrollsToTop={false}
   stickyHeaderIndices={[]}
   style={
     {

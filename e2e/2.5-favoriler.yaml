@@ -1,15 +1,24 @@
 # 2.5 Favoriler: ayrı ekran, detay açılır, çıkarılır, işaretler tutarlı, boş durum,
 # uygulama tamamen kapatılıp açılınca korunur, liste filtresinden bağımsız.
-appId: host.exp.Exponent
+appId: ${APP_ID || 'host.exp.Exponent'}
 name: 2.5 Favoriler
 ---
 - runFlow: { file: subflows/caseKit.yaml, env: { DEBUG: reset } }
 - runFlow: subflows/openApp.yaml
+- runFlow: subflows/clearFavorites.yaml
 
-# Başlangıç: favori yok
+# Başlangıç: favori yok. Aşağı kaydırılmış listeden favorilere gidip dönünce liste kaldığı yerden devam eder.
+- scrollUntilVisible:
+    element: 'Toros Air TA560, .*'
+    direction: DOWN
 - tapOn: Favoriler
 - assertVisible: Henüz favori uçuşun yok
-- tapOn: { id: BackButton }
+- runFlow: subflows/back.yaml
+- assertVisible: 'Toros Air TA560, .*'
+- assertNotVisible: 24 uçuş bulundu
+- scrollUntilVisible:
+    element: AE347 uçuşunu favorilere ekle
+    direction: UP
 
 - tapOn: AE347 uçuşunu favorilere ekle
 - tapOn: AE331 uçuşunu favorilere ekle
@@ -29,10 +38,10 @@ name: 2.5 Favoriler
 - tapOn: 'Anadolu Express AE331, .*'
 - assertVisible: AE331 uçuşunu favorilerden çıkar
 - tapOn: AE331 uçuşunu favorilerden çıkar
-- tapOn: { id: BackButton }
+- runFlow: subflows/back.yaml
 - assertNotVisible: 'Anadolu Express AE331, .*'
 - assertVisible: 'Anadolu Express AE347, .*'
-- tapOn: { id: BackButton }
+- runFlow: subflows/back.yaml
 - assertVisible: AE331 uçuşunu favorilere ekle
 
 # Liste filtresinden bağımsız: aktarmalı AE347 direkt filtresi açıkken de favorilerde

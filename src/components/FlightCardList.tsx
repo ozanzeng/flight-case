@@ -29,6 +29,9 @@ export function FlightCardList({ flights, onOpenDetail, header, footer, onEndRea
       ItemSeparatorComponent={Separator}
       onEndReached={onEndReached}
       onEndReachedThreshold={onEndReached ? 0.5 : undefined}
+      // iOS: başlıktaki "Favoriler" butonuna dokunmak listeyi en başa kaydırıyordu (scrollsToTop);
+      // kapatılınca favorilerden dönüşte liste kaldığı yerden devam eder.
+      scrollsToTop={false}
       style={styles.list}
       contentContainerStyle={[styles.content, { paddingBottom: 16 + insets.bottom }]}
     />
