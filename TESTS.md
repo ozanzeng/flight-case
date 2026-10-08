@@ -18,7 +18,7 @@ kendisi açıp kapatır; 4000'deki sunucuya dokunmaz.
 ## Çalıştırma
 
 ```bash
-npm test                 # unit + bileşen + snapshot + smoke + entegrasyon (50 test)
+npm test                 # unit + bileşen + snapshot + smoke + entegrasyon (53 test)
 ```
 
 E2E (ek kurulum: Java 17+ ve [Maestro](https://maestro.mobile.dev)):
@@ -87,11 +87,18 @@ npm run test:e2e -- -e APP_URL=exp://127.0.0.1:8081   # Metro adresi (varsayıla
 | Hata: anlaşılır mesaj ve "Tekrar dene"; başarıya döner; eldeki veriyi silmez | Bileşen: *ErrorMessage* · Unit (reducer, hook) · Smoke (`/debug/fail-once` → `FLIGHTS_UNAVAILABLE`) · Entegrasyon (ilk sayfa, sonraki sayfa, detay) · E2E `2.6` · Snapshot |
 | Yükleniyor, hata ve boş durumu üst üste gösterilmez | Entegrasyon: her durumda diğerlerinin yokluğu · E2E `2.6` |
 
+### P1
+| Gereksinim | Testler |
+|---|---|
+| Üçüncü test: servis hatasında "Tekrar dene" ile başarılı liste (ekran etkileşimi) | Entegrasyon: *2.6 › ilk istekte yükleniyor; hata olunca … Tekrar dene başarıya döner* · E2E `2.6` |
+| Sırasız yanıt: hızlı filtre/sıralama değişiminde geç dönen eski yanıt yeni sonucun üzerine yazmaz | Unit (hook): yanıtlar ters sırayla, eski istekler iptal · Entegrasyon: case-kit `race` modunda iki senaryo, 3,5 sn geç yanıt beklemesi · E2E `P1-sirasiz-yanit` (`race` modu) |
+
 ## Son çalıştırma
 
-- `npm test`: 11 dosya, **50 test**, 6 snapshot — hepsi geçti.
-- `maestro test e2e`: **6/6 akış** geçti — iPhone 18 Pro simülatörü, iOS 27.0, Expo Go (SDK 57).
+- `npm test`: 11 dosya, **53 test**, 6 snapshot — hepsi geçti.
+- `maestro test e2e`: **7/7 akış** geçti — iPhone 18 Pro simülatörü, iOS 27.0, Expo Go (SDK 57).
 - Testlerin davranışa bağlı olduğu, uygulama kodu bilerek bozularak denendi (bagaj 0/null karışması,
   "Tekrar dene"nin yanlış sayfayı istemesi, favorilerin liste filtresine bağlanması, filtre
-  değişiminde sıfırlamanın kaldırılması, favorilerin depolamaya yazılmaması): her birinde ilgili
-  testler kırıldı.
+  değişiminde sıfırlamanın kaldırılması, favorilerin depolamaya yazılmaması, sorgu değişiminde
+  süren isteğin iptal edilmemesi, iptal edilen isteğin yanıtının yok sayılmaması): her birinde
+  ilgili testler kırıldı.
