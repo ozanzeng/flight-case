@@ -3,6 +3,7 @@ import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from '
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { FlightDto } from '../api/types';
+import { ErrorMessage } from '../components/ErrorMessage';
 import { FlightCard } from '../components/FlightCard';
 import { FlightFilters } from '../components/FlightFilters';
 import { colors } from '../components/theme';
@@ -10,7 +11,7 @@ import { useFlightList } from '../features/flights/useFlightList';
 import type { RootStackScreenProps } from '../navigation/types';
 
 export function FlightListScreen({ navigation }: RootStackScreenProps<'FlightList'>) {
-  const { query, status, items, total, error, loadNextPage, setSort, setOnlyDirect } = useFlightList();
+  const { query, status, items, total, error, loadNextPage, retry, setSort, setOnlyDirect } = useFlightList();
   const insets = useSafeAreaInsets();
 
   const openDetail = useCallback(
@@ -19,7 +20,7 @@ export function FlightListScreen({ navigation }: RootStackScreenProps<'FlightLis
   );
 
   const renderContent = () => {
-    // Geçici: yükleniyor/hata durumları 2.6'da tamamlanacak.
+    // Ekranda aynı anda tek durum: ilk yükleme, ilk sayfa hatası, boş sonuç veya liste.
     if (status === 'loading' && items.length === 0) {
       return (
         <View style={styles.center}>
@@ -30,7 +31,14 @@ export function FlightListScreen({ navigation }: RootStackScreenProps<'FlightLis
     if (status === 'error' && items.length === 0) {
       return (
         <View style={styles.center}>
-          <Text style={styles.error}>{error}</Text>
+          <ErrorMessage message={error ?? ''} onRetry={retry} />
+        </View>
+      );
+    }
+    if (status === 'success' && items.length === 0 && !query.onlyDirect) {
+      return (
+        <View style={styles.center}>
+          <Text style={styles.emptyTitle}>Uçuş bulunamadı</Text>
         </View>
       );
     }
@@ -63,10 +71,14 @@ export function FlightListScreen({ navigation }: RootStackScreenProps<'FlightLis
         ItemSeparatorComponent={Separator}
         onEndReached={loadNextPage}
         onEndReachedThreshold={0.5}
-        // Sonraki sayfa yüklenirken belirteç listenin altında; mevcut kartlar görünür kalır.
+        // Sonraki sayfa yüklenirken ya da hata verdiğinde liste görünür kalır; altta yalnızca biri gösterilir.
         ListFooterComponent={
           status === 'loadingMore' ? (
             <ActivityIndicator style={styles.footer} accessibilityLabel="Daha fazla uçuş yükleniyor" />
+          ) : status === 'error' ? (
+            <View style={styles.footer}>
+              <ErrorMessage message={error ?? ''} onRetry={retry} />
+            </View>
           ) : null
         }
         contentContainerStyle={[styles.content, { paddingBottom: 16 + insets.bottom }]}
@@ -115,10 +127,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 12,
     padding: 24,
-  },
-  error: {
-    color: colors.danger,
-    textAlign: 'center',
   },
   emptyTitle: {
     fontSize: 17,

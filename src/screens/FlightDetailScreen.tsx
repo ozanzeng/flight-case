@@ -2,6 +2,7 @@ import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-nat
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { FlightDto } from '../api/types';
+import { ErrorMessage } from '../components/ErrorMessage';
 import { FavoriteButton } from '../components/FavoriteButton';
 import { colors } from '../components/theme';
 import { formatBaggage, formatDate, formatDuration, formatPrice, formatStops, formatTime } from '../domain/format';
@@ -9,9 +10,8 @@ import { useFlightDetail } from '../features/flights/useFlightDetail';
 import type { RootStackScreenProps } from '../navigation/types';
 
 export function FlightDetailScreen({ route }: RootStackScreenProps<'FlightDetail'>) {
-  const state = useFlightDetail(route.params.flightId);
+  const { state, retry } = useFlightDetail(route.params.flightId);
 
-  // Geçici: yükleniyor/hata durumları 2.6'da tamamlanacak.
   if (state.status === 'loading') {
     return (
       <View style={styles.center}>
@@ -22,7 +22,7 @@ export function FlightDetailScreen({ route }: RootStackScreenProps<'FlightDetail
   if (state.status === 'error') {
     return (
       <View style={styles.center}>
-        <Text style={styles.error}>{state.message}</Text>
+        <ErrorMessage message={state.message} onRetry={retry} />
       </View>
     );
   }
@@ -134,9 +134,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 24,
     backgroundColor: colors.background,
-  },
-  error: {
-    color: colors.danger,
-    textAlign: 'center',
   },
 });

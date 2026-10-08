@@ -51,13 +51,19 @@ export function useFlightList() {
     loadPage(query, page + 1);
   }, [loadPage, query, status, hasMore, page]);
 
+  const retry = useCallback(() => {
+    // Başarısız olan sayfa yeniden istenir; yüklenmiş sayfalar korunur.
+    if (status !== 'error') return;
+    loadPage(query, page + 1);
+  }, [loadPage, query, status, page]);
+
   const setSort = useCallback((sort: FlightSort) => dispatch({ type: 'queryChanged', query: { sort } }), []);
   const setOnlyDirect = useCallback(
     (onlyDirect: boolean) => dispatch({ type: 'queryChanged', query: { onlyDirect } }),
     [],
   );
 
-  return { ...state, loadNextPage, setSort, setOnlyDirect };
+  return { ...state, loadNextPage, retry, setSort, setOnlyDirect };
 }
 
 export function toMessage(error: unknown): string {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { fetchFlightById } from '../../api/flightsApi';
 import type { FlightDto } from '../../api/types';
@@ -11,6 +11,8 @@ type DetailState =
 
 export function useFlightDetail(id: string) {
   const [state, setState] = useState<DetailState>({ status: 'loading' });
+  // Artırıldığında istek yeniden yapılır ("Tekrar dene").
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -22,7 +24,9 @@ export function useFlightDetail(id: string) {
         setState({ status: 'error', message: toMessage(error) });
       });
     return () => controller.abort();
-  }, [id]);
+  }, [id, attempt]);
 
-  return state;
+  const retry = useCallback(() => setAttempt(value => value + 1), []);
+
+  return { state, retry };
 }
