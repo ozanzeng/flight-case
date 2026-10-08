@@ -23,7 +23,7 @@ export class ApiError extends Error {
  * Sorgu metnini sabit anahtar sırasıyla üretir. Tanımsız alanlar gönderilmez;
  * sunucu varsayılanları uygular.
  */
-export function buildFlightsQuery(query: FlightListQuery): string {
+function buildFlightsQuery(query: FlightListQuery): string {
   const pairs: [string, string][] = [];
   if (query.page !== undefined) pairs.push(['page', String(query.page)]);
   if (query.limit !== undefined) pairs.push(['limit', String(query.limit)]);
