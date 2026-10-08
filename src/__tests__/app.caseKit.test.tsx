@@ -302,3 +302,57 @@ describe('2.6 Yüklenme, boş ve hata durumları', () => {
     expect(await screen.findByLabelText('Bagaj: Bagaj dahil değil', {}, WAIT)).toBeTruthy();
   });
 });
+
+describe('P1 Sırasız yanıt dayanıklılığı', () => {
+  /** Geç kalan eski yanıtlar (race: 300–3000 ms) gelene kadar bekler. */
+  const waitForLateResponses = () => act(async () => new Promise(resolve => setTimeout(resolve, 3500)));
+  const directSwitch = () => screen.getByRole('switch', { name: 'Yalnızca direkt uçuşlar' });
+
+  it('race modunda filtre/sıralama hızlı değişince ekranda yalnızca son seçimin sonucu kalır', async () => {
+    await debug('/debug/mode?value=race');
+    await renderApp();
+    await screen.findByText('24 uçuş bulundu', {}, WAIT);
+
+    // Yanıt beklemeden beş hızlı değişiklik; son seçim: yalnızca direkt + en düşük fiyat.
+    await fireEvent(directSwitch(), 'valueChange', true);
+    await fireEvent.press(screen.getByRole('button', { name: 'Sırala: En kısa süre' }));
+    await fireEvent(directSwitch(), 'valueChange', false);
+    await fireEvent.press(screen.getByRole('button', { name: 'Sırala: En düşük fiyat' }));
+    await fireEvent(directSwitch(), 'valueChange', true);
+
+    const expected = await serverCards('/flights?page=1&limit=8&sort=price&onlyDirect=true');
+    await waitFor(() => expect(screen.getByText('17 uçuş bulundu')).toBeTruthy(), WAIT);
+    expect(visibleCards()).toEqual(expected);
+
+    await waitForLateResponses();
+    expect(screen.getByText('17 uçuş bulundu')).toBeTruthy();
+    expect(visibleCards()).toEqual(expected);
+    expect(listRequests().slice(1).map(url => query(url))).toEqual([
+      expect.objectContaining({ page: '1', sort: 'price', onlyDirect: 'true' }),
+      expect.objectContaining({ page: '1', sort: 'duration', onlyDirect: 'true' }),
+      expect.objectContaining({ page: '1', sort: 'duration', onlyDirect: 'false' }),
+      expect.objectContaining({ page: '1', sort: 'price', onlyDirect: 'false' }),
+      expect.objectContaining({ page: '1', sort: 'price', onlyDirect: 'true' }),
+    ]);
+  });
+
+  it('race modunda son seçim filtresiz + en kısa süre olduğunda da geç yanıtlar üzerine yazmaz', async () => {
+    await debug('/debug/mode?value=race');
+    await renderApp();
+    await screen.findByText('24 uçuş bulundu', {}, WAIT);
+
+    await fireEvent(directSwitch(), 'valueChange', true);
+    await fireEvent.press(screen.getByRole('button', { name: 'Sırala: En kısa süre' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Sırala: En düşük fiyat' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Sırala: En kısa süre' }));
+    await fireEvent(directSwitch(), 'valueChange', false);
+
+    const expected = await serverCards('/flights?page=1&limit=8&sort=duration&onlyDirect=false');
+    await waitFor(() => expect(visibleCards()).toEqual(expected), WAIT);
+    expect(screen.getByText('24 uçuş bulundu')).toBeTruthy();
+
+    await waitForLateResponses();
+    expect(screen.getByText('24 uçuş bulundu')).toBeTruthy();
+    expect(visibleCards()).toEqual(expected);
+  });
+});

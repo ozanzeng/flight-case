@@ -1,6 +1,7 @@
 # maestro test e2e  →  maddeler sırayla çalışır
 flows:
   - '2.*.yaml'
+  - 'P1-*.yaml'
 executionOrder:
   continueOnFailure: true
   flowsOrder:
@@ -10,3 +11,4 @@ executionOrder:
     - 2.4-ucus-detayi
     - 2.5-favoriler
     - 2.6-durumlar
+    - P1-sirasiz-yanit

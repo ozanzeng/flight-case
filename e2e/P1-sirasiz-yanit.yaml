@@ -1,0 +1,33 @@
+# P1 Sırasız yanıt dayanıklılığı: race modunda (yanıtlar 300–3000 ms, sırasız) filtre ve
+# sıralama hızlı değiştirilir; geç dönen eski yanıtlar son seçimin sonucunun üzerine yazmaz.
+appId: host.exp.Exponent
+name: P1 Sırasız yanıt dayanıklılığı
+env:
+  CASE_KIT_URL: ${CASE_KIT_URL || 'http://localhost:4000'}
+---
+- runFlow: { file: subflows/caseKit.yaml, env: { DEBUG: reset } }
+- runFlow: subflows/openApp.yaml
+- runFlow: { file: subflows/caseKit.yaml, env: { DEBUG: 'mode?value=race' } }
+
+# Yanıt beklemeden hızlı değişiklikler; son seçim: yalnızca direkt + en düşük fiyat
+- tapOn: Yalnızca direkt uçuşlar
+- tapOn: 'Sırala: En kısa süre'
+- tapOn: Yalnızca direkt uçuşlar
+- tapOn: 'Sırala: En düşük fiyat'
+- tapOn: Yalnızca direkt uçuşlar
+
+- extendedWaitUntil:
+    visible: 17 uçuş bulundu
+    timeout: 15000
+- assertVisible: 'Ege Hava Yollari EH204, .*, Direkt, 1.349,00 TL'
+
+# Geç kalan eski yanıtlar gelir; ekran değişmemeli
+- runScript:
+    file: scripts/waitForLateResponses.js
+    env: { CASE_KIT_URL: '${CASE_KIT_URL}' }
+- assertVisible: 17 uçuş bulundu
+- assertVisible: 'Ege Hava Yollari EH204, .*, Direkt, 1.349,00 TL'
+- assertVisible: { text: 'Sırala: En düşük fiyat', selected: true }
+- assertNotVisible: '.*, 1 aktarmalı, .*'
+
+- runFlow: { file: subflows/caseKit.yaml, env: { DEBUG: reset } }

@@ -17,6 +17,7 @@ function page(items: FlightDto[], meta: Partial<FlightListResponse['meta']>): Fl
 // fetch'i sahteleyip yanıtları testin istediği anda döndürüyoruz; API katmanı gerçek çalışır.
 type PendingRequest = {
   url: string;
+  signal?: AbortSignal;
   respond: (body: FlightListResponse) => Promise<void>;
   fail: (message: string) => Promise<void>;
 };
@@ -26,10 +27,11 @@ const originalFetch = globalThis.fetch;
 beforeEach(() => {
   requests.length = 0;
   globalThis.fetch = jest.fn(
-    (url: string) =>
+    (url: string, init?: { signal?: AbortSignal }) =>
       new Promise(resolve => {
         requests.push({
           url,
+          signal: init?.signal,
           respond: body => act(async () => resolve({ ok: true, json: async () => body } as Response)),
           fail: message =>
             act(async () =>
@@ -48,6 +50,7 @@ afterAll(() => {
 });
 
 const ids = (items: FlightDto[]) => items.map(flight => flight.id);
+const query = (url: string) => Object.fromEntries(new URL(url).searchParams);
 
 describe('useFlightList', () => {
   it('2.3: filtre değişince sayfalama başa döner ve eski sayfalar yeni sonuca karışmaz', async () => {
@@ -148,5 +151,34 @@ describe('useFlightList', () => {
     await requests[2].respond(page(all.slice(8, 16), { page: 2 }));
     expect(result.current.status).toBe('success');
     expect(ids(result.current.items)).toEqual(ids(all.slice(0, 16)));
+  });
+
+  it('P1: filtre/sıralama hızlı değişince geç ve sırasız dönen eski yanıtlar yeni sonucun üzerine yazmaz', async () => {
+    const { result } = await renderHook(() => useFlightList());
+    await waitFor(() => expect(requests).toHaveLength(1));
+    await requests[0].respond(page(all.slice(0, 8), { page: 1 }));
+
+    // Üç hızlı değişiklik: her biri yeni bir ilk sayfa isteği başlatır, öncekini iptal eder.
+    await act(async () => result.current.setOnlyDirect(true));
+    await act(async () => result.current.setSort('duration'));
+    await act(async () => result.current.setOnlyDirect(false));
+    expect(requests).toHaveLength(4);
+    expect(requests.slice(1).map(r => query(r.url))).toEqual([
+      { page: '1', limit: '8', sort: 'price', onlyDirect: 'true' },
+      { page: '1', limit: '8', sort: 'duration', onlyDirect: 'true' },
+      { page: '1', limit: '8', sort: 'duration', onlyDirect: 'false' },
+    ]);
+    // Hızlı değişikliklerin başlattığı eski istekler iptal edildi; yalnızca sonuncusu açık.
+    expect(requests.slice(1).map(r => r.signal?.aborted)).toEqual([true, true, false]);
+
+    // Yanıtlar ters sırayla döner: önce en yenisi, ardından eskiler geç gelir.
+    const latest = all.slice(16, 24); // son sorgunun yanıtı (içerik ayırt edilebilsin diye farklı dilim)
+    await requests[3].respond(page(latest, { page: 1, sort: 'duration' }));
+    await requests[2].respond(page(direct.slice(8, 16), { page: 1, total: 17, sort: 'duration', onlyDirect: true }));
+    await requests[1].respond(page(direct.slice(0, 8), { page: 1, total: 17, onlyDirect: true }));
+
+    expect(result.current.query).toEqual({ sort: 'duration', onlyDirect: false });
+    expect(ids(result.current.items)).toEqual(ids(latest));
+    expect(result.current).toMatchObject({ status: 'success', total: 24, page: 1 });
   });
 });
