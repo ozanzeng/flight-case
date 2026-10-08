@@ -11,7 +11,7 @@ zorunlu test de bu paketin içindedir (aşağıda **2.7** ile işaretli).
 | Snapshot | Jest | `__snapshots__` | Kart, filtreler, hata mesajı, detay (FL024), favoriler (dolu/boş) — davranış testlerine **ek** |
 | Smoke | Jest + gerçek case-kit | `src/api/__tests__/caseKit.smoke.test.ts` | API katmanı ↔ `case-kit/server.js` sözleşmesi |
 | Entegrasyon | Jest + gerçek case-kit | `src/__tests__/app.*.test.tsx` | Tüm ekranlar ve navigasyon; senaryolar case-kit `/debug` anahtarlarıyla |
-| E2E | Maestro | `e2e/` | Gerçek simülatörde Expo Go üzerinde uygulama; senaryolar case-kit `/debug` anahtarlarıyla |
+| E2E | Maestro | `e2e/` | iOS simülatörü ve Android emülatöründe Expo Go üzerinde uygulama; senaryolar case-kit `/debug` anahtarlarıyla |
 
 Smoke ve entegrasyon testleri `case-kit/server.js`'i Jest worker'ına özel bir portta (4101, 4102, …)
 kendisi açıp kapatır; 4000'deki sunucuya dokunmaz.
@@ -32,7 +32,7 @@ kendisi açıp kapatır; 4000'deki sunucuya dokunmaz.
 | `src/api/__tests__/caseKit.smoke.test.ts` | Smoke | 6 | Gerçek case-kit sözleşmesi |
 | `src/__tests__/app.caseKit.test.tsx` | Entegrasyon | 17 | 2.1–2.6 ve P1, gerçek case-kit ile |
 | `src/__tests__/app.hydration.test.tsx` | Entegrasyon | 1 | `<App />` açılışı: favoriler yüklenmeden ekran yok, depolamaya yazılmaz |
-| `e2e/*.yaml` | E2E | 7 akış | 2.1–2.6 ve P1, gerçek simülatörde |
+| `e2e/*.yaml` | E2E | 7 akış | 2.1–2.6 ve P1; aynı akışlar iOS ve Android'de |
 
 ## Çalıştırma
 
@@ -45,7 +45,8 @@ E2E (ek kurulum: Java 17+ ve [Maestro](https://maestro.mobile.dev)):
 ```bash
 cd case-kit && node server.js            # 1. terminal — mock servis (4000)
 npx expo start --ios                     # 2. terminal — uygulama simülatörde açık olmalı
-npm run test:e2e -- -e APP_URL=exp://127.0.0.1:8081   # Metro adresi (varsayılan 8081)
+npm run test:e2e -- -e APP_URL=exp://127.0.0.1:8081                              # iOS simülatörü
+npm run test:e2e -- -e APP_ID=host.exp.exponent -e APP_URL=exp://10.0.2.2:8081   # Android emülatörü
 ```
 
 ## Madde → test eşleşmesi
@@ -97,6 +98,7 @@ npm run test:e2e -- -e APP_URL=exp://127.0.0.1:8081   # Metro adresi (varsayıla
 | Uygulama kapatılıp açılınca korunur | **2.7** Unit (store): *ekleme ve çıkarma … yeniden açılınca geri yüklenir* · E2E `2.5` (`stopApp` + yeniden açılış) |
 | Açılışta kayıtlar yüklenmeden boş state depolamaya yazılmaz | **2.7** Unit (store): *yüklerken depolamaya yazmaz* · Entegrasyon `app.hydration`: okuma bitene kadar ekran yok, `setItem` hiç çağrılmaz |
 | Liste filtresinden bağımsız | Entegrasyon · E2E `2.5` |
+| Favorilerden dönünce liste kaldığı yerden devam eder (iOS hatası düzeltmesi) | E2E `2.5` |
 
 ### 2.6 Yüklenme, boş ve hata durumları
 | Gereksinim | Testler |
@@ -121,7 +123,8 @@ npm run test:e2e -- -e APP_URL=exp://127.0.0.1:8081   # Metro adresi (varsayıla
 ## Son çalıştırma
 
 - `npm test`: 12 dosya, **56 test**, 6 snapshot — hepsi geçti.
-- `maestro test e2e`: **7/7 akış** geçti — iPhone 18 Pro simülatörü, iOS 27.0, Expo Go (SDK 57).
+- `maestro test e2e`: **iOS'ta 7/7** (iPhone 18 Pro simülatörü, iOS 27.0) ve **Android'de 7/7**
+  (`medium_phone` emülatörü, Android 16 / API 36) akış geçti — Expo Go (SDK 57).
 - Testlerin davranışa bağlı olduğu, uygulama kodu bilerek bozularak denendi (bagaj 0/null karışması,
   "Tekrar dene"nin yanlış sayfayı istemesi, favorilerin liste filtresine bağlanması, filtre
   değişiminde sıfırlamanın kaldırılması, favorilerin depolamaya yazılmaması, sorgu değişiminde
@@ -142,4 +145,6 @@ Testler maddelerle birlikte adım adım eklendi ve değişti. Her adımda tüm p
 | Ölçülmemiş memoizasyonun kaldırılması | Uygulamada kazanç sağlamayan `useCallback`/`useMemo` kaldırıldı; testler değişmeden geçti. Favoriler sıralaması sayısal zamana alındı; sıra testleri değişmeden geçti. | Case §5: ölçülmemiş optimizasyon olmasın; §6: sayısal alanla sırala. |
 | Liste performansı (Vercel React Native kuralları) | `FlightListScreen.render.test.tsx` eklendi. Önce mevcut kodda çalıştırıldı ve kırıldı (sonraki sayfa yüklenirken 8 kartın hepsi, favori değişince diğer kartlar yeniden render ediliyordu); `memo` + sabit `onPress` ile geçti. | Optimizasyonun ölçülerek yapılması. |
 | Kod incelemesi düzeltmeleri | Kart tekrar `flight` prop'u alıyor; favori butonu store'u kendisi okuyor. `FlightCard.test.tsx`: her zaman doğru olan bir kontrol kaldırıldı, favori zinciri (bas → store'a yazıldı → işaret değişti → geri al) uçtan uca test ediliyor. Render ölçümü, `formatPrice` üzerine kurulu sayaçtan kart başına sayaca (`formatTime(departureAt)`, benzersizliği testte kontrol edilir) geçti. Snapshot'lar güncellenmeden geçti; ekran çıktısı değişmedi. | İnceleme bulguları: kaybolabilen favori dokunuşu, tekrarlanan kod, kırılgan ölçüm. |
+| Android doğrulaması | E2E akışları iki platformda çalışacak hale getirildi: uygulama kimliği dışarıdan verilir (`APP_ID`; Expo Go Android'de `host.exp.exponent`), geri dönüş platforma göre seçilir (`subflows/back.yaml`: iOS'ta başlıktaki geri butonu, Android'de sistem geri tuşu), Android'de açılışta çıkan Expo Go geliştirici menüsü kapatılır, kapanmakta olan sürece giden bağlantı kaybolabildiği için uygulama açılışı `retry` ile yeniden denenir. Her akış başında favoriler temizlenir (`subflows/clearFavorites.yaml`), böylece başlangıç durumu cihazdaki eski verilerden bağımsızdır. Uygulama kodu değişmedi. | Uygulamanın iki platformda da doğrulanması: Android'de 7/7, değişikliklerden sonra iOS'ta yeniden 7/7. |
+| iOS: favorilerden dönüşte liste başa dönüyordu | Başlıktaki "Favoriler" butonuna dokunmak iOS'un `scrollsToTop` davranışını tetikleyip listeyi en başa kaydırıyordu (video karelerinden tespit edildi). `FlightCardList`'te `scrollsToTop={false}`. `e2e/2.5-favoriler.yaml`'a regresyon adımı eklendi: aşağı kaydırılmış listeden favorilere gidip dönünce aynı kart görünür. Snapshot'a yalnızca bu prop eklendi. | Kullanıcının bulduğu hata; Android'de yoktu. |
 

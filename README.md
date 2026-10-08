@@ -8,6 +8,7 @@ uygulaması. Veri `case-kit/` içindeki mock servisten gelir.
 |---|---|
 | P0 — 2.1 liste · 2.2 sayfalama · 2.3 filtre/sıralama · 2.4 detay · 2.5 favoriler · 2.6 durumlar · 2.7 testler | ✅ Tamamlandı |
 | P1 — üçüncü test · sırasız yanıt dayanıklılığı | ✅ Tamamlandı ([nasıl doğrulandı](#6-p1)) |
+| Platform | ✅ **iOS ve Android** — ikisinde de çalıştırıldı ve aynı E2E akışlarıyla doğrulandı ([ayrıntı](#2-doğrulanan-platform)) |
 
 **İçindekiler:** [1. Kurulum ve çalıştırma](#1-kurulum-ve-çalıştırma) ·
 [2. Doğrulanan platform](#2-doğrulanan-platform) · [3. Testler](#3-testler) ·
@@ -23,8 +24,10 @@ uygulaması. Veri `case-kit/` içindeki mock servisten gelir.
 
 - **Node 22.13+** ve npm. Mock servis Node 18+ ile çalışır; testlerde kullanılan React Native
   Testing Library 14 ise Node `^22.13 || >=24` ister.
-- **iOS:** macOS, Xcode ve bir iOS simülatörü. Expo Go simülatöre ilk açılışta otomatik kurulur;
-  ayrıca hesap, API anahtarı ya da native derleme gerekmez.
+- **iOS:** macOS, Xcode ve bir iOS simülatörü.
+- **Android:** Android Studio (Android SDK) ve bir Android emülatörü (AVD).
+- Expo Go simülatöre/emülatöre ilk açılışta otomatik kurulur; ayrıca hesap, API anahtarı ya da
+  native derleme gerekmez.
 
 ### Adımlar
 
@@ -50,18 +53,19 @@ curl "http://localhost:4000/flights?page=1&limit=8&sort=price"
 **2. terminal — uygulama:**
 
 ```bash
-npx expo start --ios
+npx expo start --ios        # iOS simülatörü
+npx expo start --android    # Android emülatörü (emülatör açık olmalı)
 ```
 
-Uygulama simülatörde Expo Go içinde açılır. İlk açılışta Expo'nun geliştirici menüsü çıkarsa
-"Continue" ile kapatılır.
+Uygulama Expo Go içinde açılır. İlk açılışta Expo'nun tanıtım ekranı (iOS, "Continue") ya da
+geliştirici menüsü (Android) çıkarsa kapatılır.
 
 ### Servis adresi
 
 | Ortam | Adres | Not |
 |---|---|---|
 | iOS simülatörü | `http://localhost:4000` | Varsayılan |
-| Android emülatörü | `http://10.0.2.2:4000` | Otomatik seçilir (doğrulanmadı, bkz. [7](#7-bilinen-eksikler)) |
+| Android emülatörü | `http://10.0.2.2:4000` | Otomatik seçilir |
 | Fiziksel cihaz | `http://<bilgisayarın-LAN-IP'si>:4000` | `EXPO_PUBLIC_API_URL=http://<IP>:4000 npx expo start` |
 
 ### Sorun giderme
@@ -70,6 +74,9 @@ Uygulama simülatörde Expo Go içinde açılır. İlk açılışta Expo'nun gel
   Xcode yerine Command Line Tools'u gösteriyordur.
   `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer` ile düzelir (ya da komutun
   önüne `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer` eklenir).
+- **Android: `npx expo start --android` cihaz bulamıyor:** Emülatörün açık olduğunu ve
+  `adb devices` çıktısında göründüğünü kontrol edin; Android SDK varsayılan yerde değilse
+  `ANDROID_HOME` tanımlanmalıdır.
 - **Xcode 27'de simülatör penceresi görünmüyor:** "Simulator" uygulamasının yerini DeviceHub aldı.
   Simülatörü DeviceHub'daki **Start** ile başlatmak gerekir; komut satırından (`simctl boot`)
   başlatılan cihaz DeviceHub'da tıklanabilir görünmeyebilir.
@@ -78,14 +85,17 @@ Uygulama simülatörde Expo Go içinde açılır. İlk açılışta Expo'nun gel
 
 ## 2. Doğrulanan platform
 
-| | |
-|---|---|
-| Platform | **iOS** |
-| Cihaz | iPhone 18 Pro simülatörü, iOS 27.0 |
-| Çalışma ortamı | Expo Go (SDK 57) |
-| Geliştirme ortamı | macOS, Xcode 27.0, Node 22.22.3 |
+Uygulama **iOS ve Android'de** çalıştırıldı. İkisinde de aynı 7 Maestro E2E akışı (2.1–2.6 ve P1)
+geçti; maddeler ayrıca elle denendi.
 
-Bütün maddeler bu simülatörde elle ve Maestro E2E akışlarıyla doğrulandı. Android doğrulanmadı.
+| | iOS | Android |
+|---|---|---|
+| Cihaz | iPhone 18 Pro simülatörü | `medium_phone` emülatörü (Android Studio) |
+| İşletim sistemi | iOS 27.0 | Android 16 (API 36, arm64) |
+| Çalışma ortamı | Expo Go (SDK 57) | Expo Go (SDK 57) |
+| E2E | 7/7 akış geçti | 7/7 akış geçti |
+
+Geliştirme ortamı: macOS, Xcode 27.0, Android SDK (API 36), Node 22.22.3.
 
 ---
 
@@ -122,7 +132,7 @@ Case'in istediklerine ek olarak P0 maddelerinin her biri birden çok seviyede te
 | Snapshot | Jest | Kart, filtreler, hata mesajı, detay (FL024), favoriler (dolu/boş) |
 | Smoke | Jest + gerçek case-kit | API katmanı ↔ `server.js` sözleşmesi (BASLA.md'deki FL004/FL009/FL006 doğrulaması dahil) |
 | Entegrasyon | Jest + gerçek case-kit | Tüm ekranlar ve navigasyon; senaryolar case-kit `/debug` anahtarlarıyla |
-| E2E | Maestro | Gerçek simülatörde Expo Go ile 2.1–2.6 ve P1 akışları (`e2e/`) |
+| E2E | Maestro | iOS simülatörü ve Android emülatöründe Expo Go ile 2.1–2.6 ve P1 akışları (`e2e/`) |
 
 Hangi gereksinimin hangi testlerle doğrulandığı madde madde ve test güncellemelerinin geçmişi
 [`TESTS.md`](TESTS.md) dosyasındadır.
@@ -130,12 +140,17 @@ Hangi gereksinimin hangi testlerle doğrulandığı madde madde ve test güncell
 ### E2E (isteğe bağlı)
 
 Ek kurulum gerektirir: Java 17+ ve [Maestro](https://maestro.mobile.dev). Son çalıştırmada
-**7/7 akış** geçti (iPhone 18 Pro simülatörü, iOS 27.0, Expo Go SDK 57).
+**iOS'ta 7/7 ve Android'de 7/7 akış** geçti. Aynı akışlar iki platformda da çalışır; platform
+yalnızca uygulama kimliği ve Metro adresiyle seçilir.
 
 ```bash
-cd case-kit && node server.js                          # 1. terminal: mock servis (4000)
-npx expo start --ios                                   # 2. terminal: uygulama simülatörde açık
-npm run test:e2e -- -e APP_URL=exp://127.0.0.1:8081    # 3. terminal: Metro adresi
+cd case-kit && node server.js     # 1. terminal: mock servis (4000)
+npx expo start --ios              # 2. terminal: uygulama açık (Android için --android)
+
+# 3. terminal — iOS simülatörü
+npm run test:e2e -- -e APP_URL=exp://127.0.0.1:8081
+# 3. terminal — Android emülatörü (emülatör içinden Metro'ya 10.0.2.2 ile erişilir)
+npm run test:e2e -- -e APP_ID=host.exp.exponent -e APP_URL=exp://10.0.2.2:8081
 ```
 
 ---
@@ -175,8 +190,9 @@ src/
   kütüphaneler Expo Go'da hazır.
 - **Navigasyon — React Navigation native-stack:** Üç ekran var (liste, detay, favoriler).
   Detay listenin üstüne açıldığı için liste ekranı arkada açık kalır; geri dönüldüğünde filtre,
-  sıralama, yüklenmiş sayfalar ve kaydırma konumu ek kod olmadan korunur (2.4). Favoriler ekranına
-  liste başlığındaki "Favoriler" butonuyla gidilir. Expo Router'ın dosya tabanlı yönlendirmesi
+  sıralama ve yüklenmiş sayfalar ek kod olmadan korunur (2.4). Favoriler ekranına
+  liste başlığındaki "Favoriler" butonuyla gidilir. iOS'ta bu butona dokunmak listeyi en başa
+  kaydırdığı için listede `scrollsToTop` kapalı. Expo Router'ın dosya tabanlı yönlendirmesi
   bu ölçekte bir şey kazandırmadığı için seçilmedi.
 - **Liste state'i — `useReducer` + hook (`useFlightList`):** State yalnızca liste ekranını
   ilgilendirir, global olması gerekmez; saf reducer kolay test edilir. Durum tek bir `status`
@@ -220,7 +236,7 @@ src/
 
 ## 5. Harcanan süre
 
-Toplam **yaklaşık 4 saat** (6 saatlik sınırın içinde). Süreler git kayıtlarına göre yaklaşıktır.
+Toplam **yaklaşık 5,5 saat** (6 saatlik sınırın içinde). Süreler git kayıtlarına göre yaklaşıktır.
 
 | Aşama | Süre |
 |---|---|
@@ -231,6 +247,8 @@ Toplam **yaklaşık 4 saat** (6 saatlik sınırın içinde). Süreler git kayıt
 | Ek testler (unit, smoke, entegrasyon, snapshot, Maestro E2E) | ~30 dk |
 | P1 ve teknik beklenti/veri sözleşmesi denetimleri | ~25 dk |
 | Kod incelemesi, liste performansı ölçümü, README | ~50 dk |
+| Android: emülatör kurulumu, E2E akışlarının Android'e uyarlanması ve doğrulama | ~45 dk |
+| iOS: favorilerden dönüşte listenin başa dönmesi hatasının bulunması ve düzeltilmesi | ~35 dk |
 
 ---
 
@@ -280,26 +298,13 @@ Böylece yanıtlar hangi sırayla dönerse dönsün yalnızca son seçimin yanı
 
 ## 7. Bilinen eksikler
 
-- **Android doğrulanmadı.** Emülatör adresi (`10.0.2.2:4000`) yapılandırıldı ama uygulama Android'de
-  çalıştırılmadı; testler ve E2E yalnızca iOS'ta koşuldu.
-- **Çok uzun listeler (binlerce kayıt) için ayarlanmadı.** Mock veri 24 uçuş. Yüzlerce kayda kadar
-  sorun beklenmez: sayfalama, FlatList sanallaştırması ve memo sayesinde yeni sayfanın maliyeti
-  sabittir. Binlerce kayıtta zorlanacak noktalar: sayfa boyutu 8 (sona inmek için çok istek),
-  `onEndReachedThreshold` 0,5 (hızlı kaydırmada geç kalabilir), `getItemLayout` olmaması ve yüklenen
-  tüm uçuşların bellekte kalması (bu ölçekte FlashList düşünülmeli), her favori değişikliğinde
-  favori listesinin tamamının yeniden yazılması. Büyük veriyle ölçülmedi.
-- **Detay her açılışta servisten yeniden istenir;** önbellek yok.
-- **Favoriler uçuşun eklendiği andaki kopyasını saklar.** Servisteki veri değişirse (ör. fiyat)
-  favoriler ekranındaki kopya güncellenmez; mock veri sabit olduğu için bu case'te etkisi yok.
-- **Depolama okunamazsa** (bozuk kayıt) favoriler boş başlar ve ilk favori değişikliği bozuk kaydın
-  üzerine yazar.
-- **Saat dilimi sabit UTC+3 varsayar.** Europe/Istanbul kuralı değişirse `domain/format.ts`
-  güncellenmelidir.
-- **E2E'de doğrulanamayan tek an:** sonraki sayfa yüklenirken belirtecin listeyi bloklamaması,
-  case-kit'in en uzun gecikmesi (3 sn) içinde bittiğinden Maestro ile güvenilir yakalanamıyor;
-  entegrasyon testinde ve simülatörde elle doğrulandı.
-- **Node sürümü:** Case "Node 18+" diyor; uygulama ve mock servis için bu yeterli, ancak test
-  kütüphanesi (RNTL 14) Node 22.13+ gerektiriyor.
+- Fiziksel cihazda denenmedi; yalnızca iOS simülatörü ve Android emülatörü kullanıldı.
+- Binlerce kayıtlık listeler için ayarlanmadı (mock veri 24 uçuş): sayfa boyutu 8 ve FlatList bu
+  ölçekte yetersiz kalabilir; o durumda FlashList ve daha büyük sayfa düşünülmeli.
+- Detay her açılışta servisten yeniden istenir; önbellek yok.
+- Favoriler uçuşun eklendiği andaki kopyasını saklar; servisteki veri değişirse güncellenmez.
+- Testler (React Native Testing Library 14) Node 22.13+ ister; uygulama ve mock servis Node 18+ ile
+  çalışır.
 
 ---
 
@@ -315,9 +320,10 @@ kod incelemesinde de kullanıldı.
   değişiklikler case metnindeki cümlelerle eşleştirilerek kapsam denetiminden geçirildi, istenmeyen
   her şey kaldırıldı.
 - **Otomatik doğrulama:** TypeScript tip kontrolü (kullanılmayan kod taramasıyla), 56 Jest testi
-  (gerçek case-kit sunucusuyla smoke ve entegrasyon dahil), gerçek simülatörde 7 Maestro E2E akışı.
+  (gerçek case-kit sunucusuyla smoke ve entegrasyon dahil), iOS simülatöründe ve Android
+  emülatöründe 7'şer Maestro E2E akışı.
 - **Testlerin kendisinin doğrulanması:** Uygulama kodu bilerek bozuldu ve ilgili testlerin kırıldığı
   görüldü.
-- **Elle kontrol:** Her madde iOS simülatöründe ve case-kit'in `/debug` senaryolarıyla
+- **Elle kontrol:** Her madde iOS simülatöründe (Android emülatöründe de) ve case-kit'in `/debug` senaryolarıyla
   (`fail-once`, `empty`, `slow`, `race`) denendi; davranışlar servisin ham yanıtlarıyla
   karşılaştırıldı.
