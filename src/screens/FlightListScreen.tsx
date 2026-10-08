@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -14,10 +13,7 @@ export function FlightListScreen({ navigation }: RootStackScreenProps<'FlightLis
   const { query, status, items, total, error, loadNextPage, retry, setSort, setOnlyDirect } = useFlightList();
   const insets = useSafeAreaInsets();
 
-  const openDetail = useCallback(
-    (flight: FlightDto) => navigation.navigate('FlightDetail', { flightId: flight.id }),
-    [navigation],
-  );
+  const openDetail = (flight: FlightDto) => navigation.navigate('FlightDetail', { flightId: flight.id });
 
   const renderContent = () => {
     // Ekranda aynı anda tek durum: ilk yükleme, ilk sayfa hatası, boş sonuç veya liste.

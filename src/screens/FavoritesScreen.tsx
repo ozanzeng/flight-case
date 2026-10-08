@@ -1,4 +1,3 @@
-import { useCallback, useMemo } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -12,19 +11,13 @@ export function FavoritesScreen({ navigation }: RootStackScreenProps<'Favorites'
   const byId = useFavoritesStore(state => state.byId);
   const insets = useSafeAreaInsets();
 
-  // Liste filtresinden bağımsız; burada sıralama serbest olduğu için kalkış saatine göre.
-  const favorites = useMemo(
-    () =>
-      Object.values(byId).sort(
-        (a, b) => a.departureAt.localeCompare(b.departureAt) || a.id.localeCompare(b.id),
-      ),
-    [byId],
+  // Liste filtresinden bağımsız; burada sıralama serbest olduğu için kalkış saatine göre
+  // (sayısal zaman damgası, eşitlikte id — sunucunun eşitlik kuralıyla aynı).
+  const favorites = Object.values(byId).sort(
+    (a, b) => Date.parse(a.departureAt) - Date.parse(b.departureAt) || a.id.localeCompare(b.id),
   );
 
-  const openDetail = useCallback(
-    (flight: FlightDto) => navigation.navigate('FlightDetail', { flightId: flight.id }),
-    [navigation],
-  );
+  const openDetail = (flight: FlightDto) => navigation.navigate('FlightDetail', { flightId: flight.id });
 
   if (favorites.length === 0) {
     return (

@@ -11,6 +11,7 @@ export function useFlightList() {
   const inFlightRef = useRef(false);
   const controllerRef = useRef<AbortController | null>(null);
 
+  // useCallback: aşağıdaki efektin bağımlılığı; kimliği sabit kalmazsa efekt her render'da yeniden çalışır.
   const loadPage = useCallback((query: FlightQuery, page: number) => {
     if (inFlightRef.current) return;
     inFlightRef.current = true;
@@ -45,23 +46,20 @@ export function useFlightList() {
   }, [loadPage, query]);
 
   const { status, hasMore, page } = state;
-  const loadNextPage = useCallback(() => {
+  const loadNextPage = () => {
     // Yalnızca son yükleme başarılıysa ve servis devamı olduğunu söylüyorsa.
     if (status !== 'success' || !hasMore) return;
     loadPage(query, page + 1);
-  }, [loadPage, query, status, hasMore, page]);
+  };
 
-  const retry = useCallback(() => {
+  const retry = () => {
     // Başarısız olan sayfa yeniden istenir; yüklenmiş sayfalar korunur.
     if (status !== 'error') return;
     loadPage(query, page + 1);
-  }, [loadPage, query, status, page]);
+  };
 
-  const setSort = useCallback((sort: FlightSort) => dispatch({ type: 'queryChanged', query: { sort } }), []);
-  const setOnlyDirect = useCallback(
-    (onlyDirect: boolean) => dispatch({ type: 'queryChanged', query: { onlyDirect } }),
-    [],
-  );
+  const setSort = (sort: FlightSort) => dispatch({ type: 'queryChanged', query: { sort } });
+  const setOnlyDirect = (onlyDirect: boolean) => dispatch({ type: 'queryChanged', query: { onlyDirect } });
 
   return { ...state, loadNextPage, retry, setSort, setOnlyDirect };
 }
