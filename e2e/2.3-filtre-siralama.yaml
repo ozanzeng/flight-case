@@ -1,0 +1,33 @@
+# 2.3 Filtre ve sıralama: varsayılanlar, sunucu tarafı filtre/sıralama, boş sonuçta
+# açıklama ve "Filtreyi temizle".
+appId: host.exp.Exponent
+name: 2.3 Filtre ve sıralama
+---
+- runFlow: { file: subflows/caseKit.yaml, env: { DEBUG: reset } }
+- runFlow: subflows/openApp.yaml
+
+# Varsayılan: filtre kapalı, en düşük fiyat
+- assertVisible: { text: 'Sırala: En düşük fiyat', selected: true }
+- assertVisible: { text: 'Sırala: En kısa süre', selected: false }
+- assertVisible: 24 uçuş bulundu
+
+# Yalnızca direkt → sunucu 17 sonuç döner, en ucuz direkt EH204
+- tapOn: Yalnızca direkt uçuşlar
+- assertVisible: 17 uçuş bulundu
+- assertVisible: 'Ege Hava Yollari EH204, .*, Direkt, 1.349,00 TL'
+
+# En kısa süre → en kısa direkt TA512 (65 dk)
+- tapOn: 'Sırala: En kısa süre'
+- assertVisible: { text: 'Sırala: En kısa süre', selected: true }
+- assertVisible: 'Toros Air TA512, .*, 1 sa 5 dk, Direkt, .*'
+- assertVisible: 17 uçuş bulundu
+
+# Filtre sonucu boş → açıklama + Filtreyi temizle
+- runFlow: { file: subflows/caseKit.yaml, env: { DEBUG: 'empty?value=on' } }
+- tapOn: 'Sırala: En düşük fiyat'
+- assertVisible: Direkt uçuş bulunamadı
+- assertVisible: Filtreyi temizle
+- runFlow: { file: subflows/caseKit.yaml, env: { DEBUG: 'empty?value=off' } }
+- tapOn: Filtreyi temizle
+- assertVisible: 24 uçuş bulundu
+- assertVisible: 'Anadolu Express AE331, .*'

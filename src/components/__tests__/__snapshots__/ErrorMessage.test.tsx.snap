@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ErrorMessage (2.6) snapshot 1`] = `
+<View
+  style={
+    {
+      "alignItems": "center",
+      "gap": 12,
+    }
+  }
+>
+  <Text
+    style={
+      {
+        "color": "#B42318",
+        "fontSize": 15,
+        "textAlign": "center",
+      }
+    }
+  >
+    Uçuşlar yüklenemedi. Lütfen tekrar deneyin.
+  </Text>
+  <View
+    accessibilityRole="button"
+    accessibilityState={
+      {
+        "busy": undefined,
+        "checked": undefined,
+        "disabled": undefined,
+        "expanded": undefined,
+        "selected": undefined,
+      }
+    }
+    accessibilityValue={
+      {
+        "max": undefined,
+        "min": undefined,
+        "now": undefined,
+        "text": undefined,
+      }
+    }
+    accessible={true}
+    collapsable={false}
+    focusable={true}
+    onBlur={[Function]}
+    onClick={[Function]}
+    onFocus={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      {
+        "backgroundColor": "#1B5FD0",
+        "borderRadius": 8,
+        "paddingHorizontal": 20,
+        "paddingVertical": 12,
+      }
+    }
+  >
+    <Text
+      style={
+        {
+          "color": "#FFFFFF",
+          "fontWeight": "600",
+        }
+      }
+    >
+      Tekrar dene
+    </Text>
+  </View>
+</View>
+`;

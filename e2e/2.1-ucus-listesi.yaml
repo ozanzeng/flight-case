@@ -1,0 +1,29 @@
+# 2.1 Uçuş listesi: uygulama listeyle açılır, kartta tüm alanlar, meta.total,
+# karta dokununca doğru detay, favori aksiyonu navigasyonu tetiklemez.
+appId: host.exp.Exponent
+name: 2.1 Uçuş listesi
+---
+- runFlow: { file: subflows/caseKit.yaml, env: { DEBUG: reset } }
+- runFlow: subflows/openApp.yaml
+
+- assertVisible: İstanbul → Antalya
+- assertVisible: 24 uçuş bulundu
+# Kart: havayolu, uçuş no, kalkış/varış kodları, saatler, süre, aktarma, fiyat
+- assertVisible: 'Anadolu Express AE331, SAW 07:30 kalkış, AYT 11:00 varış, 3 sa 30 dk, 1 aktarmalı, 1.199,00 TL'
+- assertVisible: AE331 uçuşunu favorilere ekle
+
+# Favori aksiyonu detay açmaz
+- tapOn: AE331 uçuşunu favorilere ekle
+- assertVisible: AE331 uçuşunu favorilerden çıkar
+- assertVisible: 24 uçuş bulundu
+- assertNotVisible: Uçuş Detayı
+- tapOn: AE331 uçuşunu favorilerden çıkar
+- assertVisible: AE331 uçuşunu favorilere ekle
+
+# Karta dokununca doğru uçuşun detayı
+- tapOn: 'Anadolu Express AE331, .*'
+- assertVisible: Uçuş Detayı
+- assertVisible: AE331
+- assertVisible: 'Kalkış: 15 Ekim 2026, 07:30 · SAW'
+- tapOn: { id: BackButton }
+- assertVisible: 24 uçuş bulundu

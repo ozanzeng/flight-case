@@ -1,0 +1,38 @@
+# 2.4 Uçuş detayı: tarih ve bagaj (0 / null / kg), detayda favori, listeye dönüşte durum korunur.
+appId: host.exp.Exponent
+name: 2.4 Uçuş detayı
+---
+- runFlow: { file: subflows/caseKit.yaml, env: { DEBUG: reset } }
+- runFlow: subflows/openApp.yaml
+
+# null bagaj
+- tapOn: 'Mavi Kanat MK126, .*'
+- assertVisible: 'Bagaj: Bagaj bilgisi yok'
+- tapOn: { id: BackButton }
+
+# Filtre + sıralama seçili; FL024 (AE383) ertesi gün varır, bagaj 0
+- tapOn: Yalnızca direkt uçuşlar
+- assertVisible: 17 uçuş bulundu
+- tapOn: 'Anadolu Express AE383, .*'
+- assertVisible: 'Kalkış: 15 Ekim 2026, 23:20 · SAW'
+- assertVisible: 'Varış: 16 Ekim 2026, 00:45 · AYT'
+- assertVisible: 'Bagaj: Bagaj dahil değil'
+- assertVisible: 'Fiyat: 1.520,00 TL'
+
+# Detayda favori ekle → listeye anında yansır
+- tapOn: AE383 uçuşunu favorilere ekle
+- assertVisible: AE383 uçuşunu favorilerden çıkar
+- tapOn: { id: BackButton }
+- assertVisible: AE383 uçuşunu favorilerden çıkar
+# Listeye dönüş: filtre ve sonuç korunur
+- assertVisible: 17 uçuş bulundu
+- assertVisible: 'Ege Hava Yollari EH204, .*'
+- tapOn: AE383 uçuşunu favorilerden çıkar
+
+# kg bagaj (MK118, en kısa sürede 3.)
+- tapOn: 'Sırala: En kısa süre'
+- tapOn: 'Mavi Kanat MK118, .*'
+- assertVisible: 'Bagaj: 20 kg'
+- tapOn: { id: BackButton }
+- assertVisible: { text: 'Sırala: En kısa süre', selected: true }
+- assertVisible: 17 uçuş bulundu

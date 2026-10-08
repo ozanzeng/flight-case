@@ -1,0 +1,13 @@
+# Uygulamayı tamamen kapatıp yeniden açar ve uçuş listesinin yüklenmesini bekler.
+appId: host.exp.Exponent
+env:
+  APP_URL: ${APP_URL || 'exp://127.0.0.1:8081'}
+---
+- stopApp
+- openLink: ${APP_URL}
+- tapOn:
+    text: Continue
+    optional: true
+- extendedWaitUntil:
+    visible: '.*uçuş bulundu|Uçuş bulunamadı|Uçuşlar yüklenemedi.*'
+    timeout: 30000

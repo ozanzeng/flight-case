@@ -1,0 +1,10 @@
+# case-kit /debug anahtarını çağırır. Kullanım: runFlow + env DEBUG
+appId: host.exp.Exponent
+env:
+  CASE_KIT_URL: ${CASE_KIT_URL || 'http://localhost:4000'}
+---
+- runScript:
+    file: ../scripts/caseKit.js
+    env:
+      DEBUG: ${DEBUG}
+      CASE_KIT_URL: ${CASE_KIT_URL}

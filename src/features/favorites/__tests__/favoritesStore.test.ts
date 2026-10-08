@@ -3,10 +3,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import flights from '../../../../case-kit/flights.json';
 import type { FlightDto } from '../../../api/types';
 
-jest.mock('@react-native-async-storage/async-storage', () =>
-  require('@react-native-async-storage/async-storage/jest/async-storage-mock'),
-);
-
 const [fl004, fl009] = ['FL004', 'FL009'].map(id => (flights as FlightDto[]).find(flight => flight.id === id)!);
 const STORAGE_KEY = 'favorites';
 
@@ -31,7 +27,7 @@ beforeEach(async () => {
 });
 
 describe('favoritesStore', () => {
-  it('açılışta kayıtlı favorileri depolamadan geri yükler; yüklerken depolamaya yazmaz', async () => {
+  it('2.5: açılışta kayıtlı favorileri depolamadan geri yükler; yüklerken depolamaya yazmaz', async () => {
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify({ state: { byId: { FL004: fl004 } }, version: 0 }));
     jest.clearAllMocks();
 
@@ -45,7 +41,7 @@ describe('favoritesStore', () => {
     expect(await storedIds()).toEqual(['FL004']);
   });
 
-  it('ekleme ve çıkarma depolamaya yazılır; uygulama yeniden açılınca son durum geri yüklenir', async () => {
+  it('2.5: ekleme ve çıkarma depolamaya yazılır; uygulama yeniden açılınca son durum geri yüklenir', async () => {
     const store = openApp();
     await store.persist.rehydrate();
 

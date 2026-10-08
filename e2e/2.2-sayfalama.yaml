@@ -1,0 +1,27 @@
+# 2.2 Sayfalama: liste sonuna gelindikçe sonraki sayfalar yüklenir; hasMore=false olunca durur
+# (24. ve son uçuş görünür, altında yükleniyor belirteci kalmaz).
+# Not: "belirteç listeyi bloklamaz" anı case-kit'in en uzun gecikmesi (3 sn) içinde kaldığından
+# Maestro ile güvenilir yakalanamıyor; Jest entegrasyon testi (app.caseKit.test.tsx, 2.2) doğrular.
+appId: host.exp.Exponent
+name: 2.2 Sayfalama
+---
+- runFlow: { file: subflows/caseKit.yaml, env: { DEBUG: reset } }
+- runFlow: subflows/openApp.yaml
+- assertVisible: 24 uçuş bulundu
+- assertNotVisible: 'Anadolu Express AE383, .*' # 2. sayfanın ilk uçuşu henüz yok
+
+# 2. sayfa: 1. sayfanın son kartından sonra gelir
+- scrollUntilVisible:
+    element: 'Anadolu Express AE383, .*'
+    direction: DOWN
+    timeout: 30000
+- assertVisible: 'Anadolu Express AE383, .*'
+
+# 3. (son) sayfa: 24. uçuş, sonrasında yükleme yok
+- scrollUntilVisible:
+    element: 'Anadolu Express AE371, .*'
+    direction: DOWN
+    timeout: 30000
+- swipe: { start: '50%,85%', end: '50%,25%', duration: 300 }
+- assertVisible: 'Anadolu Express AE371, .*'
+- assertNotVisible: Daha fazla uçuş yükleniyor

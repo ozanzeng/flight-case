@@ -1,0 +1,46 @@
+# 2.5 Favoriler: ayrı ekran, detay açılır, çıkarılır, işaretler tutarlı, boş durum,
+# uygulama tamamen kapatılıp açılınca korunur, liste filtresinden bağımsız.
+appId: host.exp.Exponent
+name: 2.5 Favoriler
+---
+- runFlow: { file: subflows/caseKit.yaml, env: { DEBUG: reset } }
+- runFlow: subflows/openApp.yaml
+
+# Başlangıç: favori yok
+- tapOn: Favoriler
+- assertVisible: Henüz favori uçuşun yok
+- tapOn: { id: BackButton }
+
+- tapOn: AE347 uçuşunu favorilere ekle
+- tapOn: AE331 uçuşunu favorilere ekle
+- tapOn: Favoriler
+- assertVisible: 'Anadolu Express AE331, .*'
+- assertVisible: 'Anadolu Express AE347, .*'
+
+# Uygulama tamamen kapatılıp açılır: favoriler korunur
+- runFlow: subflows/openApp.yaml
+- assertVisible: AE331 uçuşunu favorilerden çıkar
+- assertVisible: AE347 uçuşunu favorilerden çıkar
+- tapOn: Favoriler
+- assertVisible: 'Anadolu Express AE331, .*'
+- assertVisible: 'Anadolu Express AE347, .*'
+
+# Favoriler → detay → çıkar: favoriler ve liste anında güncellenir
+- tapOn: 'Anadolu Express AE331, .*'
+- assertVisible: AE331 uçuşunu favorilerden çıkar
+- tapOn: AE331 uçuşunu favorilerden çıkar
+- tapOn: { id: BackButton }
+- assertNotVisible: 'Anadolu Express AE331, .*'
+- assertVisible: 'Anadolu Express AE347, .*'
+- tapOn: { id: BackButton }
+- assertVisible: AE331 uçuşunu favorilere ekle
+
+# Liste filtresinden bağımsız: aktarmalı AE347 direkt filtresi açıkken de favorilerde
+- tapOn: Yalnızca direkt uçuşlar
+- assertVisible: 17 uçuş bulundu
+- tapOn: Favoriler
+- assertVisible: 'Anadolu Express AE347, .*, 1 aktarmalı, .*'
+
+# Son favori çıkarılınca boş durum
+- tapOn: AE347 uçuşunu favorilerden çıkar
+- assertVisible: Henüz favori uçuşun yok

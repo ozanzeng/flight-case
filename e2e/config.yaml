@@ -1,0 +1,12 @@
+# maestro test e2e  →  maddeler sırayla çalışır
+flows:
+  - '2.*.yaml'
+executionOrder:
+  continueOnFailure: true
+  flowsOrder:
+    - 2.1-ucus-listesi
+    - 2.2-sayfalama
+    - 2.3-filtre-siralama
+    - 2.4-ucus-detayi
+    - 2.5-favoriler
+    - 2.6-durumlar

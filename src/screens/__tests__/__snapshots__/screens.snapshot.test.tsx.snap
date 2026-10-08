@@ -1,0 +1,1059 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`2.4: FL024 detayı (ertesi gün varış, bagaj dahil değil) 1`] = `
+<RCTScrollView
+  contentContainerStyle={
+    [
+      {
+        "gap": 16,
+        "padding": 16,
+      },
+      {
+        "paddingBottom": 24,
+      },
+    ]
+  }
+  style={
+    {
+      "backgroundColor": "#F2F4F7",
+    }
+  }
+>
+  <View>
+    <View
+      style={
+        {
+          "alignItems": "center",
+          "flexDirection": "row",
+        }
+      }
+    >
+      <View
+        style={
+          {
+            "flex": 1,
+          }
+        }
+      >
+        <Text
+          style={
+            {
+              "color": "#101828",
+              "fontSize": 22,
+              "fontWeight": "700",
+            }
+          }
+        >
+          Anadolu Express
+        </Text>
+        <Text
+          style={
+            {
+              "color": "#667085",
+              "fontSize": 13,
+            }
+          }
+        >
+          AE383
+        </Text>
+      </View>
+      <View
+        accessibilityLabel="AE383 uçuşunu favorilere ekle"
+        accessibilityRole="button"
+        accessibilityState={
+          {
+            "busy": undefined,
+            "checked": undefined,
+            "disabled": undefined,
+            "expanded": undefined,
+            "selected": false,
+          }
+        }
+        accessibilityValue={
+          {
+            "max": undefined,
+            "min": undefined,
+            "now": undefined,
+            "text": undefined,
+          }
+        }
+        accessible={true}
+        collapsable={false}
+        focusable={true}
+        hitSlop={8}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onFocus={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          [
+            {
+              "alignItems": "center",
+              "height": 44,
+              "justifyContent": "center",
+              "width": 44,
+            },
+            false,
+          ]
+        }
+      >
+        <Text
+          style={
+            [
+              {
+                "color": "#667085",
+                "fontSize": 26,
+              },
+              false,
+            ]
+          }
+        >
+          ☆
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        {
+          "backgroundColor": "#FFFFFF",
+          "borderColor": "#E1E5EB",
+          "borderRadius": 12,
+          "borderWidth": 0.5,
+          "paddingHorizontal": 16,
+        }
+      }
+    >
+      <View
+        accessibilityLabel="Kalkış: 15 Ekim 2026, 23:20 · SAW"
+        accessible={true}
+        style={
+          {
+            "borderBottomColor": "#E1E5EB",
+            "borderBottomWidth": 0.5,
+            "flexDirection": "row",
+            "gap": 16,
+            "justifyContent": "space-between",
+            "paddingVertical": 12,
+          }
+        }
+      >
+        <Text
+          style={
+            {
+              "color": "#667085",
+              "fontSize": 15,
+            }
+          }
+        >
+          Kalkış
+        </Text>
+        <View
+          style={
+            {
+              "alignItems": "flex-end",
+              "flexShrink": 1,
+            }
+          }
+        >
+          <Text
+            style={
+              {
+                "color": "#101828",
+                "fontSize": 15,
+                "fontWeight": "600",
+                "textAlign": "right",
+              }
+            }
+          >
+            23:20 · SAW
+          </Text>
+          <Text
+            style={
+              {
+                "color": "#667085",
+                "fontSize": 13,
+              }
+            }
+          >
+            15 Ekim 2026
+          </Text>
+        </View>
+      </View>
+      <View
+        accessibilityLabel="Varış: 16 Ekim 2026, 00:45 · AYT"
+        accessible={true}
+        style={
+          {
+            "borderBottomColor": "#E1E5EB",
+            "borderBottomWidth": 0.5,
+            "flexDirection": "row",
+            "gap": 16,
+            "justifyContent": "space-between",
+            "paddingVertical": 12,
+          }
+        }
+      >
+        <Text
+          style={
+            {
+              "color": "#667085",
+              "fontSize": 15,
+            }
+          }
+        >
+          Varış
+        </Text>
+        <View
+          style={
+            {
+              "alignItems": "flex-end",
+              "flexShrink": 1,
+            }
+          }
+        >
+          <Text
+            style={
+              {
+                "color": "#101828",
+                "fontSize": 15,
+                "fontWeight": "600",
+                "textAlign": "right",
+              }
+            }
+          >
+            00:45 · AYT
+          </Text>
+          <Text
+            style={
+              {
+                "color": "#667085",
+                "fontSize": 13,
+              }
+            }
+          >
+            16 Ekim 2026
+          </Text>
+        </View>
+      </View>
+      <View
+        accessibilityLabel="Süre: 1 sa 25 dk"
+        accessible={true}
+        style={
+          {
+            "borderBottomColor": "#E1E5EB",
+            "borderBottomWidth": 0.5,
+            "flexDirection": "row",
+            "gap": 16,
+            "justifyContent": "space-between",
+            "paddingVertical": 12,
+          }
+        }
+      >
+        <Text
+          style={
+            {
+              "color": "#667085",
+              "fontSize": 15,
+            }
+          }
+        >
+          Süre
+        </Text>
+        <View
+          style={
+            {
+              "alignItems": "flex-end",
+              "flexShrink": 1,
+            }
+          }
+        >
+          <Text
+            style={
+              {
+                "color": "#101828",
+                "fontSize": 15,
+                "fontWeight": "600",
+                "textAlign": "right",
+              }
+            }
+          >
+            1 sa 25 dk
+          </Text>
+        </View>
+      </View>
+      <View
+        accessibilityLabel="Aktarma: Direkt"
+        accessible={true}
+        style={
+          {
+            "borderBottomColor": "#E1E5EB",
+            "borderBottomWidth": 0.5,
+            "flexDirection": "row",
+            "gap": 16,
+            "justifyContent": "space-between",
+            "paddingVertical": 12,
+          }
+        }
+      >
+        <Text
+          style={
+            {
+              "color": "#667085",
+              "fontSize": 15,
+            }
+          }
+        >
+          Aktarma
+        </Text>
+        <View
+          style={
+            {
+              "alignItems": "flex-end",
+              "flexShrink": 1,
+            }
+          }
+        >
+          <Text
+            style={
+              {
+                "color": "#101828",
+                "fontSize": 15,
+                "fontWeight": "600",
+                "textAlign": "right",
+              }
+            }
+          >
+            Direkt
+          </Text>
+        </View>
+      </View>
+      <View
+        accessibilityLabel="Bagaj: Bagaj dahil değil"
+        accessible={true}
+        style={
+          {
+            "borderBottomColor": "#E1E5EB",
+            "borderBottomWidth": 0.5,
+            "flexDirection": "row",
+            "gap": 16,
+            "justifyContent": "space-between",
+            "paddingVertical": 12,
+          }
+        }
+      >
+        <Text
+          style={
+            {
+              "color": "#667085",
+              "fontSize": 15,
+            }
+          }
+        >
+          Bagaj
+        </Text>
+        <View
+          style={
+            {
+              "alignItems": "flex-end",
+              "flexShrink": 1,
+            }
+          }
+        >
+          <Text
+            style={
+              {
+                "color": "#101828",
+                "fontSize": 15,
+                "fontWeight": "600",
+                "textAlign": "right",
+              }
+            }
+          >
+            Bagaj dahil değil
+          </Text>
+        </View>
+      </View>
+      <View
+        accessibilityLabel="Fiyat: 1.520,00 TL"
+        accessible={true}
+        style={
+          {
+            "borderBottomColor": "#E1E5EB",
+            "borderBottomWidth": 0.5,
+            "flexDirection": "row",
+            "gap": 16,
+            "justifyContent": "space-between",
+            "paddingVertical": 12,
+          }
+        }
+      >
+        <Text
+          style={
+            {
+              "color": "#667085",
+              "fontSize": 15,
+            }
+          }
+        >
+          Fiyat
+        </Text>
+        <View
+          style={
+            {
+              "alignItems": "flex-end",
+              "flexShrink": 1,
+            }
+          }
+        >
+          <Text
+            style={
+              {
+                "color": "#101828",
+                "fontSize": 15,
+                "fontWeight": "600",
+                "textAlign": "right",
+              }
+            }
+          >
+            1.520,00 TL
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+</RCTScrollView>
+`;
+
+exports[`2.5: favoriler ekranı — boş durum 1`] = `
+<View
+  style={
+    {
+      "alignItems": "center",
+      "backgroundColor": "#F2F4F7",
+      "flex": 1,
+      "gap": 12,
+      "justifyContent": "center",
+      "padding": 24,
+    }
+  }
+>
+  <Text
+    style={
+      {
+        "color": "#101828",
+        "fontSize": 17,
+        "fontWeight": "700",
+        "textAlign": "center",
+      }
+    }
+  >
+    Henüz favori uçuşun yok
+  </Text>
+  <Text
+    style={
+      {
+        "color": "#667085",
+        "fontSize": 15,
+        "textAlign": "center",
+      }
+    }
+  >
+    Uçuş listesinde ☆ simgesine dokunarak favorilere ekleyebilirsin.
+  </Text>
+</View>
+`;
+
+exports[`2.5: favoriler ekranı — kalkış saatine göre sıralı liste 1`] = `
+<RCTScrollView
+  ItemSeparatorComponent={[Function]}
+  contentContainerStyle={
+    [
+      {
+        "padding": 16,
+      },
+      {
+        "paddingBottom": 16,
+      },
+    ]
+  }
+  data={
+    [
+      {
+        "airline": "Anadolu Express",
+        "arrivalAt": "2026-10-15T11:00:00+03:00",
+        "baggageKg": 0,
+        "currency": "TRY",
+        "departureAt": "2026-10-15T07:30:00+03:00",
+        "destination": {
+          "city": "Antalya",
+          "code": "AYT",
+          "name": "Antalya Havalimanı",
+        },
+        "durationMinutes": 210,
+        "flightNumber": "AE331",
+        "id": "FL004",
+        "origin": {
+          "city": "İstanbul",
+          "code": "SAW",
+          "name": "Sabiha Gökçen Havalimanı",
+        },
+        "priceMinor": 119900,
+        "stops": 1,
+      },
+      {
+        "airline": "Anadolu Express",
+        "arrivalAt": "2026-10-15T13:50:00+03:00",
+        "baggageKg": 0,
+        "currency": "TRY",
+        "departureAt": "2026-10-15T10:35:00+03:00",
+        "destination": {
+          "city": "Antalya",
+          "code": "AYT",
+          "name": "Antalya Havalimanı",
+        },
+        "durationMinutes": 195,
+        "flightNumber": "AE347",
+        "id": "FL009",
+        "origin": {
+          "city": "İstanbul",
+          "code": "IST",
+          "name": "İstanbul Havalimanı",
+        },
+        "priceMinor": 125500,
+        "stops": 1,
+      },
+    ]
+  }
+  getItem={[Function]}
+  getItemCount={[Function]}
+  keyExtractor={[Function]}
+  onContentSizeChange={[Function]}
+  onLayout={[Function]}
+  onMomentumScrollBegin={[Function]}
+  onMomentumScrollEnd={[Function]}
+  onScroll={[Function]}
+  onScrollBeginDrag={[Function]}
+  onScrollEndDrag={[Function]}
+  removeClippedSubviews={false}
+  renderItem={[Function]}
+  scrollEventThrottle={0.0001}
+  stickyHeaderIndices={[]}
+  style={
+    {
+      "backgroundColor": "#F2F4F7",
+    }
+  }
+  viewabilityConfigCallbackPairs={[]}
+>
+  <View>
+    <View
+      onFocusCapture={[Function]}
+      onLayout={[Function]}
+      style={null}
+    >
+      <View
+        style={
+          {
+            "alignItems": "flex-start",
+            "backgroundColor": "#FFFFFF",
+            "borderColor": "#E1E5EB",
+            "borderRadius": 12,
+            "borderWidth": 0.5,
+            "flexDirection": "row",
+            "paddingLeft": 16,
+            "paddingRight": 4,
+            "paddingVertical": 12,
+          }
+        }
+      >
+        <View
+          accessibilityHint="Uçuş detayını açar"
+          accessibilityLabel="Anadolu Express AE331, SAW 07:30 kalkış, AYT 11:00 varış, 3 sa 30 dk, 1 aktarmalı, 1.199,00 TL"
+          accessibilityRole="button"
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": undefined,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            [
+              {
+                "flex": 1,
+                "gap": 10,
+              },
+              false,
+            ]
+          }
+        >
+          <View
+            style={
+              {
+                "alignItems": "center",
+                "flexDirection": "row",
+                "gap": 8,
+                "justifyContent": "space-between",
+                "minHeight": 44,
+              }
+            }
+          >
+            <Text
+              numberOfLines={1}
+              style={
+                {
+                  "color": "#101828",
+                  "flexShrink": 1,
+                  "fontSize": 15,
+                  "fontWeight": "600",
+                }
+              }
+            >
+              Anadolu Express
+               · 
+              AE331
+            </Text>
+            <Text
+              style={
+                {
+                  "color": "#101828",
+                  "fontSize": 17,
+                  "fontWeight": "700",
+                }
+              }
+            >
+              1.199,00 TL
+            </Text>
+          </View>
+          <View
+            style={
+              {
+                "alignItems": "center",
+                "flexDirection": "row",
+                "gap": 12,
+              }
+            }
+          >
+            <View>
+              <Text
+                style={
+                  {
+                    "color": "#101828",
+                    "fontSize": 20,
+                    "fontWeight": "600",
+                  }
+                }
+              >
+                07:30
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#667085",
+                    "fontSize": 13,
+                  }
+                }
+              >
+                SAW
+              </Text>
+            </View>
+            <View
+              style={
+                {
+                  "backgroundColor": "#667085",
+                  "flex": 1,
+                  "height": 0.5,
+                }
+              }
+            />
+            <View
+              style={
+                {
+                  "alignItems": "flex-end",
+                }
+              }
+            >
+              <Text
+                style={
+                  {
+                    "color": "#101828",
+                    "fontSize": 20,
+                    "fontWeight": "600",
+                  }
+                }
+              >
+                11:00
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#667085",
+                    "fontSize": 13,
+                  }
+                }
+              >
+                AYT
+              </Text>
+            </View>
+          </View>
+          <Text
+            style={
+              {
+                "color": "#667085",
+                "fontSize": 13,
+              }
+            }
+          >
+            3 sa 30 dk
+             · 
+            1 aktarmalı
+          </Text>
+        </View>
+        <View
+          accessibilityLabel="AE331 uçuşunu favorilerden çıkar"
+          accessibilityRole="button"
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": true,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          hitSlop={8}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            [
+              {
+                "alignItems": "center",
+                "height": 44,
+                "justifyContent": "center",
+                "width": 44,
+              },
+              false,
+            ]
+          }
+        >
+          <Text
+            style={
+              [
+                {
+                  "color": "#667085",
+                  "fontSize": 26,
+                },
+                {
+                  "color": "#D97706",
+                },
+              ]
+            }
+          >
+            ★
+          </Text>
+        </View>
+      </View>
+      <View
+        style={
+          {
+            "height": 12,
+          }
+        }
+      />
+    </View>
+    <View
+      onFocusCapture={[Function]}
+      onLayout={[Function]}
+      style={null}
+    >
+      <View
+        style={
+          {
+            "alignItems": "flex-start",
+            "backgroundColor": "#FFFFFF",
+            "borderColor": "#E1E5EB",
+            "borderRadius": 12,
+            "borderWidth": 0.5,
+            "flexDirection": "row",
+            "paddingLeft": 16,
+            "paddingRight": 4,
+            "paddingVertical": 12,
+          }
+        }
+      >
+        <View
+          accessibilityHint="Uçuş detayını açar"
+          accessibilityLabel="Anadolu Express AE347, IST 10:35 kalkış, AYT 13:50 varış, 3 sa 15 dk, 1 aktarmalı, 1.255,00 TL"
+          accessibilityRole="button"
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": undefined,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            [
+              {
+                "flex": 1,
+                "gap": 10,
+              },
+              false,
+            ]
+          }
+        >
+          <View
+            style={
+              {
+                "alignItems": "center",
+                "flexDirection": "row",
+                "gap": 8,
+                "justifyContent": "space-between",
+                "minHeight": 44,
+              }
+            }
+          >
+            <Text
+              numberOfLines={1}
+              style={
+                {
+                  "color": "#101828",
+                  "flexShrink": 1,
+                  "fontSize": 15,
+                  "fontWeight": "600",
+                }
+              }
+            >
+              Anadolu Express
+               · 
+              AE347
+            </Text>
+            <Text
+              style={
+                {
+                  "color": "#101828",
+                  "fontSize": 17,
+                  "fontWeight": "700",
+                }
+              }
+            >
+              1.255,00 TL
+            </Text>
+          </View>
+          <View
+            style={
+              {
+                "alignItems": "center",
+                "flexDirection": "row",
+                "gap": 12,
+              }
+            }
+          >
+            <View>
+              <Text
+                style={
+                  {
+                    "color": "#101828",
+                    "fontSize": 20,
+                    "fontWeight": "600",
+                  }
+                }
+              >
+                10:35
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#667085",
+                    "fontSize": 13,
+                  }
+                }
+              >
+                IST
+              </Text>
+            </View>
+            <View
+              style={
+                {
+                  "backgroundColor": "#667085",
+                  "flex": 1,
+                  "height": 0.5,
+                }
+              }
+            />
+            <View
+              style={
+                {
+                  "alignItems": "flex-end",
+                }
+              }
+            >
+              <Text
+                style={
+                  {
+                    "color": "#101828",
+                    "fontSize": 20,
+                    "fontWeight": "600",
+                  }
+                }
+              >
+                13:50
+              </Text>
+              <Text
+                style={
+                  {
+                    "color": "#667085",
+                    "fontSize": 13,
+                  }
+                }
+              >
+                AYT
+              </Text>
+            </View>
+          </View>
+          <Text
+            style={
+              {
+                "color": "#667085",
+                "fontSize": 13,
+              }
+            }
+          >
+            3 sa 15 dk
+             · 
+            1 aktarmalı
+          </Text>
+        </View>
+        <View
+          accessibilityLabel="AE347 uçuşunu favorilerden çıkar"
+          accessibilityRole="button"
+          accessibilityState={
+            {
+              "busy": undefined,
+              "checked": undefined,
+              "disabled": undefined,
+              "expanded": undefined,
+              "selected": true,
+            }
+          }
+          accessibilityValue={
+            {
+              "max": undefined,
+              "min": undefined,
+              "now": undefined,
+              "text": undefined,
+            }
+          }
+          accessible={true}
+          collapsable={false}
+          focusable={true}
+          hitSlop={8}
+          onBlur={[Function]}
+          onClick={[Function]}
+          onFocus={[Function]}
+          onResponderGrant={[Function]}
+          onResponderMove={[Function]}
+          onResponderRelease={[Function]}
+          onResponderTerminate={[Function]}
+          onResponderTerminationRequest={[Function]}
+          onStartShouldSetResponder={[Function]}
+          style={
+            [
+              {
+                "alignItems": "center",
+                "height": 44,
+                "justifyContent": "center",
+                "width": 44,
+              },
+              false,
+            ]
+          }
+        >
+          <Text
+            style={
+              [
+                {
+                  "color": "#667085",
+                  "fontSize": 26,
+                },
+                {
+                  "color": "#D97706",
+                },
+              ]
+            }
+          >
+            ★
+          </Text>
+        </View>
+      </View>
+    </View>
+  </View>
+</RCTScrollView>
+`;

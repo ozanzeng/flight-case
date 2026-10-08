@@ -1,0 +1,47 @@
+# 2.6 Yüklenme, boş ve hata durumları: hata mesajı + Tekrar dene (ilk sayfa, sonraki sayfa,
+# detay), tekrar deneme başarıya döner ve eldeki veriyi silmez; boş liste; durumlar üst üste değil.
+appId: host.exp.Exponent
+name: 2.6 Yüklenme, boş ve hata durumları
+---
+# İlk sayfa hatası → yalnızca mesaj + Tekrar dene → başarı
+- runFlow: { file: subflows/caseKit.yaml, env: { DEBUG: reset } }
+- runFlow: { file: subflows/caseKit.yaml, env: { DEBUG: fail-once } }
+- runFlow: subflows/openApp.yaml
+- assertVisible: Uçuşlar yüklenemedi. Lütfen tekrar deneyin.
+- assertVisible: Tekrar dene
+- assertNotVisible: '.*uçuş bulundu'
+- assertNotVisible: Uçuş bulunamadı
+- tapOn: Tekrar dene
+- assertVisible: 24 uçuş bulundu
+- assertNotVisible: Uçuşlar yüklenemedi. Lütfen tekrar deneyin.
+
+# Boş liste → yalnızca "Uçuş bulunamadı"
+- runFlow: { file: subflows/caseKit.yaml, env: { DEBUG: 'empty?value=on' } }
+- runFlow: subflows/openApp.yaml
+- assertVisible: Uçuş bulunamadı
+- assertNotVisible: '.*uçuş bulundu'
+- assertNotVisible: Tekrar dene
+- runFlow: { file: subflows/caseKit.yaml, env: { DEBUG: 'empty?value=off' } }
+
+# Sonraki sayfa hatası → kartlar korunur, altta Tekrar dene → 2. sayfa gelir
+- runFlow: subflows/openApp.yaml
+- runFlow: { file: subflows/caseKit.yaml, env: { DEBUG: fail-once } }
+- scrollUntilVisible:
+    element: Tekrar dene
+    direction: DOWN
+- assertVisible: Uçuşlar yüklenemedi. Lütfen tekrar deneyin.
+- assertVisible: 'Toros Air TA560, .*'
+- assertNotVisible: Daha fazla uçuş yükleniyor
+- tapOn: Tekrar dene
+- scrollUntilVisible:
+    element: 'Anadolu Express AE383, .*'
+    direction: DOWN
+- assertNotVisible: Uçuşlar yüklenemedi. Lütfen tekrar deneyin.
+
+# Detay hatası → Tekrar dene → detay
+- runFlow: subflows/openApp.yaml
+- runFlow: { file: subflows/caseKit.yaml, env: { DEBUG: fail-once } }
+- tapOn: 'Anadolu Express AE331, .*'
+- assertVisible: Uçuşlar yüklenemedi. Lütfen tekrar deneyin.
+- tapOn: Tekrar dene
+- assertVisible: 'Bagaj: Bagaj dahil değil'
