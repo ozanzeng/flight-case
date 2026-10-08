@@ -74,7 +74,7 @@ export function FlightListScreen({ navigation }: RootStackScreenProps<'FlightLis
         // Sonraki sayfa yüklenirken ya da hata verdiğinde liste görünür kalır; altta yalnızca biri gösterilir.
         ListFooterComponent={
           status === 'loadingMore' ? (
-            <ActivityIndicator style={styles.footer} accessibilityLabel="Daha fazla uçuş yükleniyor" />
+            <ActivityIndicator style={styles.footer} accessible accessibilityLabel="Daha fazla uçuş yükleniyor" />
           ) : status === 'error' ? (
             <View style={styles.footer}>
               <ErrorMessage message={error ?? ''} onRetry={retry} />
