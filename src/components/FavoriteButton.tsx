@@ -8,6 +8,9 @@ type Props = {
   flight: FlightDto;
 };
 
+// Favori durumunu ve değiştirmeyi store'dan kendisi okur: liste, detay ve favoriler ekranında
+// işaret tek kaynaktan gelir. Abonelik yalnızca bu uçuşun işaretine bağlıdır; değişince
+// yalnızca bu buton render edilir.
 export function FavoriteButton({ flight }: Props) {
   const isFavorite = useIsFavorite(flight.id);
   const toggle = useFavoritesStore(state => state.toggle);

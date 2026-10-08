@@ -23,17 +23,17 @@ describe('FlightCard (2.1)', () => {
     expect(screen.getByRole('button', { name: 'AE331 uçuşunu favorilere ekle' })).toBeTruthy();
   });
 
-  it('karta dokununca doğru uçuşla detay aksiyonu çağrılır', async () => {
+  it('karta dokununca doğru uçuşun id’siyle detay aksiyonu çağrılır', async () => {
     const onPress = jest.fn();
     await render(<FlightCard flight={fl004} onPress={onPress} />);
 
     await fireEvent.press(screen.getByText('Anadolu Express · AE331'));
 
     expect(onPress).toHaveBeenCalledTimes(1);
-    expect(onPress).toHaveBeenCalledWith(fl004);
+    expect(onPress).toHaveBeenCalledWith('FL004');
   });
 
-  it('favori aksiyonu detay navigasyonunu tetiklemez; durumu adı ve seçili bilgisiyle değişir', async () => {
+  it('favori aksiyonu detay navigasyonunu tetiklemez; favoriyi kaydeder ve durumu adı, seçili bilgisi ve şekliyle gösterir', async () => {
     const onPress = jest.fn();
     await render(<FlightCard flight={fl004} onPress={onPress} />);
 
@@ -44,6 +44,10 @@ describe('FlightCard (2.1)', () => {
     expect(screen.getByRole('button', { name: 'AE331 uçuşunu favorilerden çıkar', selected: true })).toBeTruthy();
     // Durum yalnız renkle değil, yıldız şekliyle de görünür.
     expect(screen.getByText('★')).toBeTruthy();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'AE331 uçuşunu favorilerden çıkar' }));
+    expect(useFavoritesStore.getState().byId.FL004).toBeUndefined();
+    expect(screen.getByText('☆')).toBeTruthy();
   });
 
   it('snapshot', async () => {

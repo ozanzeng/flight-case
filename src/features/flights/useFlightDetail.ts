@@ -18,7 +18,11 @@ export function useFlightDetail(id: string) {
     const controller = new AbortController();
     setState({ status: 'loading' });
     fetchFlightById(id, controller.signal)
-      .then(flight => setState({ status: 'success', flight }))
+      .then(flight => {
+        // Ekran kapandıysa istek iptal edilmiştir; geç gelen yanıt state'e yazılmaz.
+        if (controller.signal.aborted) return;
+        setState({ status: 'success', flight });
+      })
       .catch((error: unknown) => {
         if (controller.signal.aborted) return;
         setState({ status: 'error', message: toMessage(error) });

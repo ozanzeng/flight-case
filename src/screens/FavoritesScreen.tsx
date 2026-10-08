@@ -1,15 +1,13 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useCallback } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
-import type { FlightDto } from '../api/types';
-import { FlightCard } from '../components/FlightCard';
+import { FlightCardList } from '../components/FlightCardList';
 import { colors } from '../components/theme';
 import { useFavoritesStore } from '../features/favorites/favoritesStore';
 import type { RootStackScreenProps } from '../navigation/types';
 
 export function FavoritesScreen({ navigation }: RootStackScreenProps<'Favorites'>) {
   const byId = useFavoritesStore(state => state.byId);
-  const insets = useSafeAreaInsets();
 
   // Liste filtresinden bağımsız; burada sıralama serbest olduğu için kalkış saatine göre
   // (sayısal zaman damgası, eşitlikte id — sunucunun eşitlik kuralıyla aynı).
@@ -17,7 +15,11 @@ export function FavoritesScreen({ navigation }: RootStackScreenProps<'Favorites'
     (a, b) => Date.parse(a.departureAt) - Date.parse(b.departureAt) || a.id.localeCompare(b.id),
   );
 
-  const openDetail = (flight: FlightDto) => navigation.navigate('FlightDetail', { flightId: flight.id });
+  // Kartlar memo'lu: onPress sabit kalmalı.
+  const openDetail = useCallback(
+    (flightId: string) => navigation.navigate('FlightDetail', { flightId }),
+    [navigation],
+  );
 
   if (favorites.length === 0) {
     return (
@@ -28,30 +30,10 @@ export function FavoritesScreen({ navigation }: RootStackScreenProps<'Favorites'
     );
   }
 
-  return (
-    <FlatList
-      data={favorites}
-      keyExtractor={item => item.id}
-      renderItem={({ item }) => <FlightCard flight={item} onPress={openDetail} />}
-      ItemSeparatorComponent={Separator}
-      style={styles.list}
-      contentContainerStyle={[styles.content, { paddingBottom: 16 + insets.bottom }]}
-    />
-  );
+  return <FlightCardList flights={favorites} onOpenDetail={openDetail} />;
 }
 
-const Separator = () => <View style={styles.separator} />;
-
 const styles = StyleSheet.create({
-  list: {
-    backgroundColor: colors.background,
-  },
-  content: {
-    padding: 16,
-  },
-  separator: {
-    height: 12,
-  },
   center: {
     flex: 1,
     alignItems: 'center',

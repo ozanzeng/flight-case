@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import type { FlightDto } from '../api/types';
@@ -7,10 +8,13 @@ import { colors } from './theme';
 
 type Props = {
   flight: FlightDto;
-  onPress: (flight: FlightDto) => void;
+  onPress: (flightId: string) => void;
 };
 
-export function FlightCard({ flight, onPress }: Props) {
+// memo: liste state'i değişince (sonraki sayfa, yükleniyor) değişmeyen kartlar yeniden render
+// edilmez. Uçuş nesnelerinin referansı sabit kalır (reducer yeni sayfayı sona ekler), onPress de
+// listenin kökünde sabit tutulur. Ölçüm: src/screens/__tests__/FlightListScreen.render.test.tsx
+export const FlightCard = memo(function FlightCard({ flight, onPress }: Props) {
   const departure = formatTime(flight.departureAt);
   const arrival = formatTime(flight.arrivalAt);
   const duration = formatDuration(flight.durationMinutes);
@@ -31,7 +35,7 @@ export function FlightCard({ flight, onPress }: Props) {
     // ekran okuyucu ikisine ayrı ayrı odaklanabilir.
     <View style={styles.card}>
       <Pressable
-        onPress={() => onPress(flight)}
+        onPress={() => onPress(flight.id)}
         accessibilityRole="button"
         accessibilityLabel={accessibilityLabel}
         accessibilityHint="Uçuş detayını açar"
@@ -64,7 +68,7 @@ export function FlightCard({ flight, onPress }: Props) {
       <FavoriteButton flight={flight} />
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   card: {
