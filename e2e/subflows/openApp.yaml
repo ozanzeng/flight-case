@@ -1,13 +1,26 @@
 # Uygulamayı tamamen kapatıp yeniden açar ve uçuş listesinin yüklenmesini bekler.
-appId: host.exp.Exponent
+appId: ${APP_ID || 'host.exp.Exponent'}
 env:
   APP_URL: ${APP_URL || 'exp://127.0.0.1:8081'}
 ---
 - stopApp
-- openLink: ${APP_URL}
+# Android'de kapanmakta olan sürece giden bağlantı kaybolabiliyor; açılmazsa bağlantı yeniden gönderilir.
+- retry:
+    maxRetries: 2
+    commands:
+      - openLink: ${APP_URL}
+      - extendedWaitUntil:
+          visible: '.*uçuş bulundu|Uçuş bulunamadı|Uçuşlar yüklenemedi.*|Continue|Go home'
+          timeout: 20000
+# Expo Go'nun açılış ekranları: iOS'ta tek seferlik tanıtım, Android'de geliştirici menüsü.
 - tapOn:
     text: Continue
     optional: true
+- runFlow:
+    when:
+      visible: Go home
+    commands:
+      - back
 - extendedWaitUntil:
     visible: '.*uçuş bulundu|Uçuş bulunamadı|Uçuşlar yüklenemedi.*'
     timeout: 30000

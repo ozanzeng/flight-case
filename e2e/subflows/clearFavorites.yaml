@@ -1,0 +1,11 @@
+# Başlangıç durumu: favori yok. Favoriler ekranında kalan her favoriyi çıkarıp listeye döner.
+appId: ${APP_ID || 'host.exp.Exponent'}
+---
+- tapOn: Favoriler
+- repeat:
+    while:
+      visible: '.* uçuşunu favorilerden çıkar'
+    commands:
+      - tapOn: '.* uçuşunu favorilerden çıkar'
+- assertVisible: Henüz favori uçuşun yok
+- runFlow: back.yaml

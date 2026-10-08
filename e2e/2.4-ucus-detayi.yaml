@@ -1,14 +1,15 @@
 # 2.4 Uçuş detayı: tarih ve bagaj (0 / null / kg), detayda favori, listeye dönüşte durum korunur.
-appId: host.exp.Exponent
+appId: ${APP_ID || 'host.exp.Exponent'}
 name: 2.4 Uçuş detayı
 ---
 - runFlow: { file: subflows/caseKit.yaml, env: { DEBUG: reset } }
 - runFlow: subflows/openApp.yaml
+- runFlow: subflows/clearFavorites.yaml
 
 # null bagaj
 - tapOn: 'Mavi Kanat MK126, .*'
 - assertVisible: 'Bagaj: Bagaj bilgisi yok'
-- tapOn: { id: BackButton }
+- runFlow: subflows/back.yaml
 
 # Filtre + sıralama seçili; FL024 (AE383) ertesi gün varır, bagaj 0
 - tapOn: Yalnızca direkt uçuşlar
@@ -22,7 +23,7 @@ name: 2.4 Uçuş detayı
 # Detayda favori ekle → listeye anında yansır
 - tapOn: AE383 uçuşunu favorilere ekle
 - assertVisible: AE383 uçuşunu favorilerden çıkar
-- tapOn: { id: BackButton }
+- runFlow: subflows/back.yaml
 - assertVisible: AE383 uçuşunu favorilerden çıkar
 # Listeye dönüş: filtre ve sonuç korunur
 - assertVisible: 17 uçuş bulundu
@@ -33,6 +34,6 @@ name: 2.4 Uçuş detayı
 - tapOn: 'Sırala: En kısa süre'
 - tapOn: 'Mavi Kanat MK118, .*'
 - assertVisible: 'Bagaj: 20 kg'
-- tapOn: { id: BackButton }
+- runFlow: subflows/back.yaml
 - assertVisible: { text: 'Sırala: En kısa süre', selected: true }
 - assertVisible: 17 uçuş bulundu

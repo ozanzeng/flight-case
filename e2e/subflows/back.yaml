@@ -1,0 +1,13 @@
+# Geri dönüş: iOS'ta başlıktaki geri butonu, Android'de sistem geri tuşu.
+appId: ${APP_ID || 'host.exp.Exponent'}
+---
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn: { id: BackButton }
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - back

@@ -1,12 +1,13 @@
 # 2.6 Yüklenme, boş ve hata durumları: hata mesajı + Tekrar dene (ilk sayfa, sonraki sayfa,
 # detay), tekrar deneme başarıya döner ve eldeki veriyi silmez; boş liste; durumlar üst üste değil.
-appId: host.exp.Exponent
+appId: ${APP_ID || 'host.exp.Exponent'}
 name: 2.6 Yüklenme, boş ve hata durumları
 ---
 # İlk sayfa hatası → yalnızca mesaj + Tekrar dene → başarı
 - runFlow: { file: subflows/caseKit.yaml, env: { DEBUG: reset } }
 - runFlow: { file: subflows/caseKit.yaml, env: { DEBUG: fail-once } }
 - runFlow: subflows/openApp.yaml
+- runFlow: subflows/clearFavorites.yaml
 - assertVisible: Uçuşlar yüklenemedi. Lütfen tekrar deneyin.
 - assertVisible: Tekrar dene
 - assertNotVisible: '.*uçuş bulundu'

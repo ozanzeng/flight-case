@@ -1,12 +1,13 @@
 # P1 Sırasız yanıt dayanıklılığı: race modunda (yanıtlar 300–3000 ms, sırasız) filtre ve
 # sıralama hızlı değiştirilir; geç dönen eski yanıtlar son seçimin sonucunun üzerine yazmaz.
-appId: host.exp.Exponent
+appId: ${APP_ID || 'host.exp.Exponent'}
 name: P1 Sırasız yanıt dayanıklılığı
 env:
   CASE_KIT_URL: ${CASE_KIT_URL || 'http://localhost:4000'}
 ---
 - runFlow: { file: subflows/caseKit.yaml, env: { DEBUG: reset } }
 - runFlow: subflows/openApp.yaml
+- runFlow: subflows/clearFavorites.yaml
 - runFlow: { file: subflows/caseKit.yaml, env: { DEBUG: 'mode?value=race' } }
 
 # Yanıt beklemeden hızlı değişiklikler; son seçim: yalnızca direkt + en düşük fiyat

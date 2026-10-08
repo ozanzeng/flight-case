@@ -1,10 +1,11 @@
 # 2.3 Filtre ve sıralama: varsayılanlar, sunucu tarafı filtre/sıralama, boş sonuçta
 # açıklama ve "Filtreyi temizle".
-appId: host.exp.Exponent
+appId: ${APP_ID || 'host.exp.Exponent'}
 name: 2.3 Filtre ve sıralama
 ---
 - runFlow: { file: subflows/caseKit.yaml, env: { DEBUG: reset } }
 - runFlow: subflows/openApp.yaml
+- runFlow: subflows/clearFavorites.yaml
 
 # Varsayılan: filtre kapalı, en düşük fiyat
 - assertVisible: { text: 'Sırala: En düşük fiyat', selected: true }

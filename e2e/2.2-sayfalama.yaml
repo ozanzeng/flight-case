@@ -2,11 +2,12 @@
 # (24. ve son uçuş görünür, altında yükleniyor belirteci kalmaz).
 # Not: "belirteç listeyi bloklamaz" anı case-kit'in en uzun gecikmesi (3 sn) içinde kaldığından
 # Maestro ile güvenilir yakalanamıyor; Jest entegrasyon testi (app.caseKit.test.tsx, 2.2) doğrular.
-appId: host.exp.Exponent
+appId: ${APP_ID || 'host.exp.Exponent'}
 name: 2.2 Sayfalama
 ---
 - runFlow: { file: subflows/caseKit.yaml, env: { DEBUG: reset } }
 - runFlow: subflows/openApp.yaml
+- runFlow: subflows/clearFavorites.yaml
 - assertVisible: 24 uçuş bulundu
 - assertNotVisible: 'Anadolu Express AE383, .*' # 2. sayfanın ilk uçuşu henüz yok
 
